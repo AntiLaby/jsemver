@@ -32,7 +32,7 @@ import java.util.Arrays;
  *
  * This exception is a wrapper exception extending {@code ParseException}.
  *
- * @author Zafar Khaja <zafarkhaja@gmail.com>
+ * @author Zafar Khaja &lt;zafarkhaja@gmail.com&gt;
  * @since 0.8.0
  */
 public class UnexpectedCharacterException extends ParseException {

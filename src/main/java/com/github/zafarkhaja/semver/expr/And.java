@@ -28,7 +28,7 @@ import com.github.zafarkhaja.semver.Version;
 /**
  * Expression for the logical "and" operator.
  *
- * @author Zafar Khaja <zafarkhaja@gmail.com>
+ * @author Zafar Khaja &lt;zafarkhaja@gmail.com&gt;
  * @since 0.7.0
  */
 class And implements Expression {

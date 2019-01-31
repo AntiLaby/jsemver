@@ -30,7 +30,7 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author Zafar Khaja <zafarkhaja@gmail.com>
+ * @author Zafar Khaja &lt;zafarkhaja@gmail.com&gt;
  */
 @RunWith(Enclosed.class)
 public class MetadataVersionTest {

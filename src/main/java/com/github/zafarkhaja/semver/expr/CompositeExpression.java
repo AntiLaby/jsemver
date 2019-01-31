@@ -31,7 +31,7 @@ import com.github.zafarkhaja.semver.Version;
  * This class implements internal DSL for the
  * SemVer Expressions using fluent interface.
  *
- * @author Zafar Khaja <zafarkhaja@gmail.com>
+ * @author Zafar Khaja &lt;zafarkhaja@gmail.com&gt;
  * @since 0.9.0
  */
 public class CompositeExpression implements Expression {

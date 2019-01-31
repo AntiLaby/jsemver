@@ -28,7 +28,7 @@ import com.github.zafarkhaja.semver.Version;
 /**
  * Expression for the comparison "greater than or equal to" operator.
  *
- * @author Zafar Khaja <zafarkhaja@gmail.com>
+ * @author Zafar Khaja &lt;zafarkhaja@gmail.com&gt;
  * @since 0.7.0
  */
 class GreaterOrEqual implements Expression {

@@ -2,7 +2,6 @@ apply plugin: 'java'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
-
 repositories {
     mavenCentral()
 }
@@ -21,16 +20,17 @@ tasks.withType(JavaCompile) {
 
 javadoc {
     options.addStringOption('-Xdoclint:none')
+    failOnError = false
 }
 
 task sourcesJar(type: Jar) {
     from sourceSets.main.allSource
-    classifier = 'sources'
+    archiveClassifier.set('sources')
 }
 
 task javadocJar(type: Jar) {
     from javadoc
-    classifier = 'javadoc'
+    archiveClassifier.set('javadoc')
 }
 
 publishing {

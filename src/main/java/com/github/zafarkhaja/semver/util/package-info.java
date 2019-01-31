@@ -25,7 +25,7 @@
 /**
  * This package provides some useful utility classes.
  *
- * @author Zafar Khaja <zafarkhaja@gmail.com>
+ * @author Zafar Khaja &lt;zafarkhaja@gmail.com&gt;
  * @since 0.7.0
  */
 package com.github.zafarkhaja.semver.util;

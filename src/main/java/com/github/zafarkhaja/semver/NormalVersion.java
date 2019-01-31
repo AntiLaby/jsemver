@@ -30,7 +30,7 @@ import java.io.Serializable;
  *
  * This class is immutable and hence thread-safe.
  *
- * @author Zafar Khaja <zafarkhaja@gmail.com>
+ * @author Zafar Khaja &lt;zafarkhaja@gmail.com&gt;
  * @since 0.2.0
  */
 class NormalVersion implements Comparable<NormalVersion>, Serializable {

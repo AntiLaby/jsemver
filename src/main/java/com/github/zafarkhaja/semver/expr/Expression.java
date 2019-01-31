@@ -30,7 +30,7 @@ import com.github.zafarkhaja.semver.Version;
  * by the nodes of the Abstract Syntax Tree produced by
  * the {@code ExpressionParser} class.
  *
- * @author Zafar Khaja <zafarkhaja@gmail.com>
+ * @author Zafar Khaja &lt;zafarkhaja@gmail.com&gt;
  * @since 0.7.0
  */
 public interface Expression {

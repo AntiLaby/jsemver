@@ -28,7 +28,7 @@ package com.github.zafarkhaja.semver;
  *
  * @param <T> the type of parser's output
  *
- * @author Zafar Khaja <zafarkhaja@gmail.com>
+ * @author Zafar Khaja &lt;zafarkhaja@gmail.com&gt;
  * @since 0.7.0
  */
 public interface Parser<T> {

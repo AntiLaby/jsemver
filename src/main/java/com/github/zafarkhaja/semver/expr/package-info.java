@@ -28,7 +28,7 @@
  * The main class of the package is the {@code ExpressionParser} class which
  * parses the specified expressions and returns the Abstract Syntax Tree.
  *
- * @author Zafar Khaja <zafarkhaja@gmail.com>
+ * @author Zafar Khaja &lt;zafarkhaja@gmail.com&gt;
  * @since 0.7.0
  */
 package com.github.zafarkhaja.semver.expr;
