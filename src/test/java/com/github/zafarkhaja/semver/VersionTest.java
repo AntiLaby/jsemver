@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2012-2014 Zafar Khaja <zafarkhaja@gmail.com>.
+ * Copyright 2012-2016 Zafar Khaja <zafarkhaja@gmail.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -334,6 +334,24 @@ public class VersionTest {
             Version v = Version.valueOf("2.0.0-beta");
             assertTrue(v.satisfies(gte("1.0.0").and(lt("2.0.0"))));
             assertFalse(v.satisfies(gte("2.0.0").and(lt("3.0.0"))));
+        }
+
+        @Test
+        public void shouldCheckIfMajorVersionCompatible() {
+            Version v1 = Version.valueOf("1.0.0");
+            Version v2 = Version.valueOf("1.2.3");
+            Version v3 = Version.valueOf("2.0.0");
+            assertTrue(v1.isMajorVersionCompatible(v2));
+            assertFalse(v1.isMajorVersionCompatible(v3));
+        }
+
+        @Test
+        public void shouldCheckIfMinorVersionCompatible() {
+            Version v1 = Version.valueOf("1.1.1");
+            Version v2 = Version.valueOf("1.1.2");
+            Version v3 = Version.valueOf("1.2.3");
+            assertTrue(v1.isMinorVersionCompatible(v2));
+            assertFalse(v1.isMinorVersionCompatible(v3));
         }
     }
 

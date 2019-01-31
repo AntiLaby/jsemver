@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2012-2015 Zafar Khaja <zafarkhaja@gmail.com>.
+ * Copyright 2012-2016 Zafar Khaja <zafarkhaja@gmail.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -171,7 +171,8 @@ class VersionParser implements Parser<Version> {
     /**
      * Parses the input string.
      *
-     * @param input the input string to parse
+     * @param input the input string to parse. Although {@code input} is not used
+     *        in the method, it's present to override {@code Parser.parse(String)}
      * @return a valid version object
      * @throws ParseException when there is a grammar error
      * @throws UnexpectedCharacterException when encounters an unexpected character type

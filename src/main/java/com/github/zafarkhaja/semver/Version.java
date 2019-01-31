@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2012-2015 Zafar Khaja <zafarkhaja@gmail.com>.
+ * Copyright 2012-2016 Zafar Khaja <zafarkhaja@gmail.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -562,6 +562,39 @@ public class Version implements Comparable<Version>, Serializable {
      */
     public boolean lessThanOrEqualTo(Version other) {
         return compareTo(other) <= 0;
+    }
+
+    /**
+     * Checks if this version is compatible with the
+     * other version in terms of their major versions.
+     *
+     * When checking compatibility no assumptions
+     * are made about the versions' precedence.
+     *
+     * @param other the other version to check with
+     * @return {@code true} if this version is compatible with
+     *         the other version or {@code false} otherwise
+     * @since 0.10.0
+     */
+    public boolean isMajorVersionCompatible(Version other) {
+        return this.getMajorVersion() == other.getMajorVersion();
+    }
+
+    /**
+     * Checks if this version is compatible with the
+     * other version in terms of their minor versions.
+     *
+     * When checking compatibility no assumptions
+     * are made about the versions' precedence.
+     *
+     * @param other the other version to check with
+     * @return {@code true} if this version is compatible with
+     *         the other version or {@code false} otherwise
+     * @since 0.10.0
+     */
+    public boolean isMinorVersionCompatible(Version other) {
+        return this.getMajorVersion() == other.getMajorVersion()
+            && this.getMinorVersion() == other.getMinorVersion();
     }
 
     /**
