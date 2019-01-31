@@ -46,7 +46,7 @@ project.
 </dependency>
 ~~~
 **NOTE**: To use the development version you need to add the SNAPSHOT repository
-to your `pom.xml` file: http://oss.sonatype.org/content/repositories/snapshots/.
+to your `pom.xml` file: https://heisluft.bplaced.net/maven/.
 
 Usage
 -----
