@@ -1,4 +1,4 @@
-Java SemVer v0.9.0 (SemVer 2) [![Build Status](https://travis-ci.org/zafarkhaja/jsemver.png)](https://travis-ci.org/zafarkhaja/jsemver)
+Java SemVer v0.9.0 (SemVer 2)
 ============================
 
 Java SemVer is a Java implementation of the Semantic Versioning Specification
@@ -46,7 +46,7 @@ project.
 </dependency>
 ~~~
 **NOTE**: To use the development version you need to add the SNAPSHOT repository
-to your `pom.xml` file: https://heisluft.bplaced.net/maven/.
+to your `pom.xml` file: https://heisluft.tk/maven/.
 
 Usage
 -----
@@ -288,7 +288,7 @@ There are two types of errors that may arise while using Java SemVer
 
 Bugs and Features
 -----------------
-Bug reports and feature requests can be submitted at https://github.com/zafarkhaja/jsemver/issues.
+Bug reports and feature requests can be submitted at https://github.com/AntiLaby/jsemver/issues.
 
 
 License
