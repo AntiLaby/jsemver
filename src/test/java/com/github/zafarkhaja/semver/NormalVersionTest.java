@@ -53,18 +53,15 @@ public class NormalVersionTest {
 
         @Test
         public void shouldAcceptOnlyNonNegativeMajorMinorAndPatchVersions() {
-            int[][] invalidVersions = {{-1, 2, 3}, {1, -2, 3}, {1, 2, -3}, {-1,2}, {1,-1}};
+            int[][] invalidVersions = {{-1, 2, 3}, {1, -2, 3}, {1, 2, -3}, {-1,2}, {1,-1}, {-1}};
             for (int[] versionParts : invalidVersions) {
                 try {
                     if (versionParts.length == 3) {
-                        new NormalVersion(
-                            versionParts[0],
-                            versionParts[1],
-                            versionParts[2]
-                        );
-                    } else {
+                        new NormalVersion(versionParts[0], versionParts[1], versionParts[2]);
+                    } else if (versionParts.length == 2) {
                         new NormalVersion(versionParts[0], versionParts[1]);
                     }
+                    else new NormalVersion(versionParts[0]);
                 } catch (IllegalArgumentException e) {
                     continue;
                 }

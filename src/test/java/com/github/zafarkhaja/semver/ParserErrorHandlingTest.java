@@ -81,8 +81,7 @@ public class ParserErrorHandlingTest {
     @Parameters(name = "{0}")
     public static Collection<Object[]> parameters() {
         return Arrays.asList(new Object[][] {
-            { "1",            null, 1,  new CharType[] { DOT } },
-            { "1 ",           ' ',  1,  new CharType[] { DOT } },
+            { "1 ",           ' ',  1,  new CharType[] { HYPHEN, PLUS, EOI } },
             { "1.",           null, 2,  new CharType[] { DIGIT } },
             { "1.2.",         null, 4,  new CharType[] { DIGIT } },
             { "a.b.c",        'a',  0,  new CharType[] { DIGIT } },

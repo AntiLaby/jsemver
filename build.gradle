@@ -23,6 +23,10 @@ javadoc {
     failOnError = false
 }
 
+jar {
+    from classes, processResources, file("LICENSE")
+}
+
 task sourcesJar(type: Jar) {
     from sourceSets.main.allSource
     archiveClassifier.set('sources')

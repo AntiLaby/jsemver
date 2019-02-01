@@ -1,5 +1,5 @@
-Java SemVer v0.9.0 (SemVer 2)
-============================
+Java SemVer v0.10.0 (SemVer 2, continued)
+=========================================
 
 Java SemVer is a Java implementation of the Semantic Versioning Specification
 (http://semver.org/).
@@ -21,6 +21,7 @@ development and its public API should not be considered stable.
 * [Exception Handling](#exception-handling)
 * [Bugs and Features](#bugs-and-features)
 * [License](#license)
+* [Library Additions by the AntiLaby team](#library-additions-by-the-antilaby-team)
 
 
 Installation
@@ -294,3 +295,11 @@ Bug reports and feature requests can be submitted at https://github.com/AntiLaby
 License
 -------
 Java SemVer is licensed under the MIT License - see the `LICENSE` file for details.
+
+Library Additions by the AntiLaby team
+--------------------------------------
+* PRs implemented:
+  * [#29](https://github.com/zafarkhaja/jsemver/pull/29), [#31](https://github.com/zafarkhaja/jsemver/pull/31),
+    [#39](https://github.com/zafarkhaja/jsemver/pull/39), [#48](https://github.com/zafarkhaja/jsemver/pull/48)
+* Issues addressed:
+  * #21, (#22), #26, #27, #32, #36, #38, (#40), (#42), #44, #47

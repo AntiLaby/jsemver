@@ -24,6 +24,7 @@
 package com.github.zafarkhaja.semver;
 
 import java.io.Serializable;
+import java.util.Locale;
 
 /**
  * The {@code NormalVersion} class represents the version core.
@@ -53,11 +54,6 @@ class NormalVersion implements Comparable<NormalVersion>, Serializable {
     private final int patch;
 
     /**
-     * True if patch versions not used
-     */
-	private final boolean hasPatchVersion;
-
-    /**
      * Constructs a {@code NormalVersion} with the
      * major, minor and patch version numbers.
      *
@@ -75,16 +71,14 @@ class NormalVersion implements Comparable<NormalVersion>, Serializable {
         this.major = major;
         this.minor = minor;
         this.patch = patch;
-        this.hasPatchVersion = true;
     }
 
     /**
      * Constructs a {@code NormalVersion} with the
-     * major, minor and patch version numbers.
+     * major and minor version numbers.
      *
      * @param major the major version number
      * @param minor the minor version number
-     * @param patch the patch version number
      * @throws IllegalArgumentException if one of the version numbers is a negative integer
      */
     NormalVersion(int major, int minor) {
@@ -96,7 +90,57 @@ class NormalVersion implements Comparable<NormalVersion>, Serializable {
         this.major = major;
         this.minor = minor;
         this.patch = 0;
-        this.hasPatchVersion = false;
+    }
+
+    /**
+     * Constructs a {@code NormalVersion} with the
+     * major version number.
+     *
+     * @param major the major version number
+     * @throws IllegalArgumentException if the version number is a negative integer
+     */
+    NormalVersion(int major) {
+        if (major < 0) {
+            throw new IllegalArgumentException(
+                "Major version MUST be a non-negative integer."
+            );
+        }
+        this.major = major;
+        this.minor = 0;
+        this.patch = 0;
+    }
+
+    /**
+     * Re-sets the patch version number.
+     *
+     * @param patch the new patch version number
+     * @return a new {@code NormalVersion} with the specified patch version number
+     * @throws IllegalArgumentException if the number is negative
+     */
+    NormalVersion withPatch(int patch) {
+        return new NormalVersion(major, minor, patch);
+    }
+
+    /**
+     * Re-sets the minor version number.
+     *
+     * @param minor the new minor version number
+     * @return a new {@code NormalVersion} with the specified minor version number
+     * @throws IllegalArgumentException if the number is negative
+     */
+    NormalVersion withMinor(int minor) {
+        return new NormalVersion(major, minor, patch);
+    }
+
+    /**
+     * Re-sets the major version number.
+     *
+     * @param major the new major version number
+     * @return a new {@code NormalVersion} with the specified major version number
+     * @throws IllegalArgumentException if the number is negative
+     */
+    NormalVersion withMajor(int major) {
+        return new NormalVersion(major, minor, patch);
     }
 
     /**
@@ -123,14 +167,7 @@ class NormalVersion implements Comparable<NormalVersion>, Serializable {
      * @return the patch version number
      */
     int getPatch() {
-        checkIfPatchVersionEnabled();
         return patch;
-    }
-
-    private void checkIfPatchVersionEnabled() {
-        if (!hasPatchVersion) {
-            throw new IllegalStateException("This version has no patch version");
-        }
     }
 
     /**
@@ -139,11 +176,7 @@ class NormalVersion implements Comparable<NormalVersion>, Serializable {
      * @return a new instance of the {@code NormalVersion} class
      */
     NormalVersion incrementMajor() {
-        if (hasPatchVersion) {
-            return new NormalVersion(major + 1, 0, 0);
-        } else {
-            return new NormalVersion(major + 1, 0);
-        }
+        return new NormalVersion(major + 1, 0, 0);
     }
 
     /**
@@ -152,11 +185,7 @@ class NormalVersion implements Comparable<NormalVersion>, Serializable {
      * @return a new instance of the {@code NormalVersion} class
      */
     NormalVersion incrementMinor() {
-        if (hasPatchVersion) {
-            return new NormalVersion(major, minor + 1, 0);
-        } else {
-            return new NormalVersion(major, minor + 1);
-        }
+        return new NormalVersion(major, minor + 1, 0);
     }
 
     /**
@@ -165,7 +194,6 @@ class NormalVersion implements Comparable<NormalVersion>, Serializable {
      * @return a new instance of the {@code NormalVersion} class
      */
     NormalVersion incrementPatch() {
-        checkIfPatchVersionEnabled();
         return new NormalVersion(major, minor, patch + 1);
     }
 
@@ -189,13 +217,8 @@ class NormalVersion implements Comparable<NormalVersion>, Serializable {
      */
     @Override
     public boolean equals(Object other) {
-        if (this == other) {
-            return true;
-        }
-        if (!(other instanceof NormalVersion)) {
-            return false;
-        }
-        return compareTo((NormalVersion) other) == 0;
+        return this == other ||
+            other instanceof NormalVersion && compareTo((NormalVersion) other) == 0;
     }
 
     /**
@@ -206,9 +229,7 @@ class NormalVersion implements Comparable<NormalVersion>, Serializable {
         int hash = 17;
         hash = 31 * hash + major;
         hash = 31 * hash + minor;
-        if (hasPatchVersion) {
-            hash = 31 * hash + patch;
-        }
+        hash = 31 * hash + patch;
         return hash;
     }
 
@@ -223,10 +244,6 @@ class NormalVersion implements Comparable<NormalVersion>, Serializable {
      */
     @Override
     public String toString() {
-        if (hasPatchVersion) {
-            return String.format("%d.%d.%d", major, minor, patch);
-        } else {
-            return String.format("%d.%d", major, minor);
-        }
+        return String.format(Locale.US, "%d.%d.%d", major, minor, patch);
     }
 }

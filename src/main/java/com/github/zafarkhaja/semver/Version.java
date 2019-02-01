@@ -245,14 +245,10 @@ public class Version implements Comparable<Version>, Serializable {
      * @param preRelease the pre-release version
      * @param build the build metadata
      */
-    Version(
-        NormalVersion normal,
-        MetadataVersion preRelease,
-        MetadataVersion build
-    ) {
-        this.normal     = normal;
+    Version(NormalVersion normal, MetadataVersion preRelease, MetadataVersion build) {
+        this.normal = normal;
         this.preRelease = preRelease;
-        this.build      = build;
+        this.build = build;
     }
 
     /**
@@ -341,6 +337,26 @@ public class Version implements Comparable<Version>, Serializable {
      */
     public boolean satisfies(Expression expr) {
         return expr.interpret(this);
+    }
+
+    //TODO: write Tests
+    //TODO: provide Javadoc
+    public Version withMajor(int major, boolean preserveMeta) {
+        if(preserveMeta)
+            return new Version(normal.withMajor(major), preRelease, build);
+        return new Version(normal.withMajor(major));
+    }
+
+    public Version withMinor(int minor, boolean preserveMeta) {
+        if(preserveMeta)
+            return new Version(normal.withMinor(minor), preRelease, build);
+        return new Version(normal.withMinor(minor));
+    }
+
+    public Version withPatch(int patch, boolean preserveMeta) {
+        if(preserveMeta)
+            return new Version(normal.withPatch(patch), preRelease, build);
+        return new Version(normal.withPatch(patch));
     }
 
     /**

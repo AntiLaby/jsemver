@@ -100,6 +100,11 @@ public class UnexpectedCharacterException extends ParseException {
         return position;
     }
 
+    @Override
+    public String getMessage() {
+        return toString();
+    }
+
     /**
      * Gets the expected character types.
      *
