@@ -301,10 +301,16 @@ Library Additions by the AntiLaby team
 * PRs implemented:
   * [#29](https://github.com/zafarkhaja/jsemver/pull/29), [#31](https://github.com/zafarkhaja/jsemver/pull/31),
     [#39](https://github.com/zafarkhaja/jsemver/pull/39), [#48](https://github.com/zafarkhaja/jsemver/pull/48)
-* Issues addressed:
-  * [#21](https://github.com/zafarkhaja/jsemver/issues/21), (#22),
+* Issues addressed in 0.10.0:
+  * (#10), (#13),
+    (#20), [#21](https://github.com/zafarkhaja/jsemver/issues/21),
+    (#22), (#24),
     [#26](https://github.com/zafarkhaja/jsemver/issues/26), [#27](https://github.com/zafarkhaja/jsemver/issues/27),
-    [#32](https://github.com/zafarkhaja/jsemver/issues/32), [#36](https://github.com/zafarkhaja/jsemver/issues/36),
-    [#38](https://github.com/zafarkhaja/jsemver/issues/47), (#40),
-    (#42), [43](https://github.com/zafarkhaja/jsemver/issues/43),
-    [#44](https://github.com/zafarkhaja/jsemver/issues/44), [#47](https://github.com/zafarkhaja/jsemver/issues/47)
+    [#32](https://github.com/zafarkhaja/jsemver/issues/32), (#35),
+    [#36](https://github.com/zafarkhaja/jsemver/issues/36), [#38](https://github.com/zafarkhaja/jsemver/issues/38),
+    (#40), (#42),
+    [#43](https://github.com/zafarkhaja/jsemver/issues/43), [#44](https://github.com/zafarkhaja/jsemver/issues/44),
+    (#45), [#47](https://github.com/zafarkhaja/jsemver/issues/47)
+  Issues in parenthesis are not dealt with yet, the others were implemented
+* Issues Remaining:
+  * #9, #12, #15, #41
