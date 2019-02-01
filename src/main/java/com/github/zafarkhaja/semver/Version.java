@@ -359,6 +359,15 @@ public class Version implements Comparable<Version>, Serializable {
         return new Version(normal.withPatch(patch));
     }
 
+    public static boolean isValid(String toCheck) {
+      try {
+        new VersionParser(toCheck).parse(null);
+        return true;
+      } catch(ParseException e) {
+        return false;
+      }
+    }
+
     /**
      * Increments the major version.
      *

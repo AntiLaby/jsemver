@@ -302,4 +302,9 @@ Library Additions by the AntiLaby team
   * [#29](https://github.com/zafarkhaja/jsemver/pull/29), [#31](https://github.com/zafarkhaja/jsemver/pull/31),
     [#39](https://github.com/zafarkhaja/jsemver/pull/39), [#48](https://github.com/zafarkhaja/jsemver/pull/48)
 * Issues addressed:
-  * #21, (#22), #26, #27, #32, #36, #38, (#40), (#42), #44, #47
+  * [#21](https://github.com/zafarkhaja/jsemver/issues/21), (#22),
+    [#26](https://github.com/zafarkhaja/jsemver/issues/26), [#27](https://github.com/zafarkhaja/jsemver/issues/27),
+    [#32](https://github.com/zafarkhaja/jsemver/issues/32), [#36](https://github.com/zafarkhaja/jsemver/issues/36),
+    [#38](https://github.com/zafarkhaja/jsemver/issues/47), (#40),
+    (#42), [43](https://github.com/zafarkhaja/jsemver/issues/43),
+    [#44](https://github.com/zafarkhaja/jsemver/issues/44), [#47](https://github.com/zafarkhaja/jsemver/issues/47)
