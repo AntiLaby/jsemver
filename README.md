@@ -26,6 +26,35 @@ development and its public API should not be considered stable.
 
 Installation
 ------------
+### Gradle ###
+To install the Java SemVer library add the following dependency to your Gradle
+project.
+
+**Current stable version**
+~~~ groovy
+  repositories {
+    mavenCentral()
+  }
+
+  dependencies {
+    compile group: 'com.github.zafarkhaja', name: 'java-semver', version: '0.9.0'
+  }
+~~~
+
+**Development version**
+~~~ groovy
+  repositories {
+    maven {
+        url = 'https://heisluft.tk/maven/'
+    }
+  }
+
+  dependencies {
+    compile group: 'com.github.zafarkhaja', name: 'java-semver', version: '0.10.0-SNAPSHOT'
+  }
+~~~
+
+### Maven ###
 To install the Java SemVer library add the following dependency to your Maven
 project.
 
@@ -40,6 +69,11 @@ project.
 
 **Development version**
 ~~~ xml
+<repository>
+  <id>heisluft-repo</id>
+  <url>https://heisluft.tk/maven/</url>
+ </repository>
+
 <dependency>
   <groupId>com.github.zafarkhaja</groupId>
   <artifactId>java-semver</artifactId>
@@ -314,3 +348,4 @@ Library Additions by the AntiLaby team
   Issues in parenthesis are not dealt with yet, the others were implemented
 * Issues Remaining:
   * #9, #12, #15, #41
+  
