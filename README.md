@@ -13,6 +13,8 @@ development and its public API should not be considered stable.
 
 ### Table of Contents ###
 * [Installation](#installation)
+  * [Gradle](#gradle)
+  * [Maven](#maven)
 * [Usage](#usage)
   * [Creating Versions](#creating-versions)
   * [Incrementing Versions](#incrementing-versions)
@@ -27,8 +29,7 @@ development and its public API should not be considered stable.
 Installation
 ------------
 ### Gradle ###
-To install the Java SemVer library add the following dependency to your Gradle
-project.
+To install the Java SemVer library add the following dependency to your `build.gradle`
 
 **Current stable version**
 ~~~ groovy
@@ -55,8 +56,7 @@ project.
 ~~~
 
 ### Maven ###
-To install the Java SemVer library add the following dependency to your Maven
-project.
+To install the Java SemVer library add the following dependency to your `pom.xml`
 
 **Current stable version**
 ~~~ xml
@@ -80,8 +80,6 @@ project.
   <version>0.10.0-SNAPSHOT</version>
 </dependency>
 ~~~
-**NOTE**: To use the development version you need to add the SNAPSHOT repository
-to your `pom.xml` file: https://heisluft.tk/maven/.
 
 Usage
 -----
