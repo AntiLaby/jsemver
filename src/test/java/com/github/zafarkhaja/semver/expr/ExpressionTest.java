@@ -9,118 +9,91 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ExpressionTest {
-  @Nested
-  public class LessTest {
-
-    @Test
-    public void shouldCheckIfVersionIsLessThanParsedVersion() {
-      Version parsed = Version.valueOf("2.0.0");
-      Less lt = new Less(parsed);
-      assertTrue(lt.interpret(Version.valueOf("1.2.3")));
-      assertFalse(lt.interpret(Version.valueOf("3.2.1")));
-    }
+  @Test
+  public void lessTest() {
+    Version parsed = Version.valueOf("2.0.0");
+    Less lt = new Less(parsed);
+    assertTrue(lt.interpret(Version.valueOf("1.2.3")));
+    assertFalse(lt.interpret(Version.valueOf("3.2.1")));
   }
 
-  @Nested
-  public class LessOrEqualTest {
 
-    @Test
-    public void shouldCheckIfVersionIsLessThanOrEqualToParsedVersion() {
-      Version parsed = Version.valueOf("2.0.0");
-      LessOrEqual le = new LessOrEqual(parsed);
-      assertTrue(le.interpret(Version.valueOf("1.2.3")));
-      assertTrue(le.interpret(Version.valueOf("2.0.0")));
-      assertFalse(le.interpret(Version.valueOf("3.2.1")));
-    }
+  @Test
+  public void lessOrEqualTest() {
+    Version parsed = Version.valueOf("2.0.0");
+    LessOrEqual le = new LessOrEqual(parsed);
+    assertTrue(le.interpret(Version.valueOf("1.2.3")));
+    assertTrue(le.interpret(Version.valueOf("2.0.0")));
+    assertFalse(le.interpret(Version.valueOf("3.2.1")));
   }
 
-  @Nested
-  public class NotTest {
 
-    @Test
-    public void shouldRevertBooleanResultOfExpression() {
-      Expression expr1 = version -> false;
-      Expression expr2 = version -> true;
-      Not not;
-      not = new Not(expr1);
-      assertTrue(not.interpret(null));
-      not = new Not(expr2);
-      assertFalse(not.interpret(null));
-    }
+  @Test
+  public void notTest() {
+    Expression expr1 = version -> false;
+    Expression expr2 = version -> true;
+    Not not;
+    not = new Not(expr1);
+    assertTrue(not.interpret(null));
+    not = new Not(expr2);
+    assertFalse(not.interpret(null));
   }
 
-  @Nested
-  public class OrTest {
 
-    @Test
-    public void shouldCheckIfOneOfTwoExpressionsEvaluateToTrue() {
-      Expression left = version -> false;
-      Expression right = version -> true;
-      Or or = new Or(left, right);
-      assertTrue(or.interpret(null));
-    }
+  @Test
+  public void orTest() {
+    Expression left = version -> false;
+    Expression right = version -> true;
+    Or or = new Or(left, right);
+    assertTrue(or.interpret(null));
   }
 
-  @Nested
-  public class NotEqualTest {
 
-    @Test
-    public void shouldCheckIfVersionIsNotEqualToParsedVersion() {
-      Version parsed = Version.valueOf("1.2.3");
-      NotEqual ne = new NotEqual(parsed);
-      assertTrue(ne.interpret(Version.valueOf("3.2.1")));
-      assertFalse(ne.interpret(Version.valueOf("1.2.3")));
-    }
+  @Test
+  public void notEqualTest() {
+    Version parsed = Version.valueOf("1.2.3");
+    NotEqual ne = new NotEqual(parsed);
+    assertTrue(ne.interpret(Version.valueOf("3.2.1")));
+    assertFalse(ne.interpret(Version.valueOf("1.2.3")));
   }
 
-  @Nested
-  public class GreaterTest {
 
-    @Test
-    public void shouldCheckIfVersionIsGreaterThanParsedVersion() {
-      Version parsed = Version.valueOf("2.0.0");
-      Greater gt = new Greater(parsed);
-      assertTrue(gt.interpret(Version.valueOf("3.2.1")));
-      assertFalse(gt.interpret(Version.valueOf("1.2.3")));
-    }
+  @Test
+  public void greaterTest() {
+    Version parsed = Version.valueOf("2.0.0");
+    Greater gt = new Greater(parsed);
+    assertTrue(gt.interpret(Version.valueOf("3.2.1")));
+    assertFalse(gt.interpret(Version.valueOf("1.2.3")));
   }
 
-  @Nested
-  public class AndTest {
 
-    @Test
-    public void shouldCheckIfBothExpressionsEvaluateToTrue() {
-      Expression left = version -> true;
-      Expression right = version -> true;
-      And and = new And(left, right);
-      assertTrue(and.interpret(null));
-    }
+  @Test
+  public void andTest() {
+    Expression left = version -> true;
+    Expression right = version -> true;
+    And and = new And(left, right);
+    assertTrue(and.interpret(null));
   }
 
-  @Nested
-  public class EqualTest {
 
-    @Test
-    public void shouldCheckIfVersionIsEqualToParsedVersion() {
-      Version parsed = Version.valueOf("1.2.3");
-      Equal eq = new Equal(parsed);
-      assertTrue(eq.interpret(Version.valueOf("1.2.3")));
-      assertFalse(eq.interpret(Version.valueOf("3.2.1")));
-    }
+  @Test
+  public void equalTest() {
+    Version parsed = Version.valueOf("1.2.3");
+    Equal eq = new Equal(parsed);
+    assertTrue(eq.interpret(Version.valueOf("1.2.3")));
+    assertFalse(eq.interpret(Version.valueOf("3.2.1")));
   }
 
-  @Nested
-  public class GreaterOrEqualTest {
 
-    @Test
-    public void shouldCheckIfVersionIsGreaterThanOrEqualToParsedVersion() {
-      Version parsed = Version.valueOf("2.0.0");
-      GreaterOrEqual ge = new GreaterOrEqual(parsed);
-      assertTrue(ge.interpret(Version.valueOf("3.2.1")));
-      assertTrue(ge.interpret(Version.valueOf("2.0.0")));
-      assertFalse(ge.interpret(Version.valueOf("1.2.3")));
-    }
+  @Test
+  public void greaterOrEqualTest() {
+    Version parsed = Version.valueOf("2.0.0");
+    GreaterOrEqual ge = new GreaterOrEqual(parsed);
+    assertTrue(ge.interpret(Version.valueOf("3.2.1")));
+    assertTrue(ge.interpret(Version.valueOf("2.0.0")));
+    assertFalse(ge.interpret(Version.valueOf("1.2.3")));
   }
+
 
   @Nested
   public class CompositeExpressionTest {
