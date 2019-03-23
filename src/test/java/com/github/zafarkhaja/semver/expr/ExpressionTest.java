@@ -27,28 +27,6 @@ public class ExpressionTest {
     assertFalse(le.test(Version.valueOf("3.2.1")));
   }
 
-
-  @Test
-  public void notTest() {
-    Expression expr1 = version -> false;
-    Expression expr2 = version -> true;
-    Not not;
-    not = new Not(expr1);
-    assertTrue(not.test(null));
-    not = new Not(expr2);
-    assertFalse(not.test(null));
-  }
-
-
-  @Test
-  public void orTest() {
-    Expression left = version -> false;
-    Expression right = version -> true;
-    Or or = new Or(left, right);
-    assertTrue(or.test(null));
-  }
-
-
   @Test
   public void notEqualTest() {
     Version parsed = Version.valueOf("1.2.3");
@@ -65,16 +43,6 @@ public class ExpressionTest {
     assertTrue(gt.test(Version.valueOf("3.2.1")));
     assertFalse(gt.test(Version.valueOf("1.2.3")));
   }
-
-
-  @Test
-  public void andTest() {
-    Expression left = version -> true;
-    Expression right = version -> true;
-    And and = new And(left, right);
-    assertTrue(and.test(null));
-  }
-
 
   @Test
   public void equalTest() {
