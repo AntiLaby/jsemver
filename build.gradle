@@ -7,8 +7,9 @@ repositories {
 }
 
 dependencies {
-    testCompile 'org.junit.jupiter:junit-jupiter-api:5.4.1'
-    testCompile 'org.junit.jupiter:junit-jupiter-params:5.4.1'
+    testImplementation  'org.junit.jupiter:junit-jupiter-api:5.4.1'
+    testImplementation  'org.junit.jupiter:junit-jupiter-params:5.4.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
 }
 
 group = 'com.github.zafarkhaja'
@@ -96,8 +97,7 @@ signing {
 }
 
 test {
-    useJUnit()
-    maxHeapSize = '1G'
+    useJUnitPlatform()
 }
 
 publishMavenJavaPublicationToMavenLocal.dependsOn test
