@@ -23,18 +23,17 @@
  */
 package com.github.zafarkhaja.semver;
 
-import org.junit.Test;
-import org.junit.experimental.runners.Enclosed;
-import org.junit.runner.RunWith;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Nested;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
  * @author Zafar Khaja &lt;zafarkhaja@gmail.com&gt;
  */
-@RunWith(Enclosed.class)
 public class MetadataVersionTest {
 
+    @Nested
     public static class CoreFunctionalityTest {
 
         @Test
@@ -131,6 +130,7 @@ public class MetadataVersionTest {
         }
     }
 
+    @Nested
     public static class NullMetadataVersionTest {
 
         @Test
@@ -180,6 +180,7 @@ public class MetadataVersionTest {
         }
     }
 
+    @Nested
     public static class EqualsMethodTest {
 
         @Test
@@ -249,6 +250,7 @@ public class MetadataVersionTest {
         }
     }
 
+    @Nested
     public static class HashCodeMethodTest {
 
         @Test
@@ -264,6 +266,7 @@ public class MetadataVersionTest {
         }
     }
 
+    @Nested
     public static class ToStringMethodTest {
 
         @Test

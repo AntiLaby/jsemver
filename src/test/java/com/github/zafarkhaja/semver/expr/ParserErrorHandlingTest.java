@@ -24,38 +24,26 @@
 package com.github.zafarkhaja.semver.expr;
 
 import com.github.zafarkhaja.semver.expr.Lexer.Token;
-import java.util.Arrays;
-import java.util.Collection;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
+
 import static com.github.zafarkhaja.semver.expr.Lexer.Token.Type.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 /**
  *
  * @author Zafar Khaja &lt;zafarkhaja@gmail.com&gt;
  */
-@RunWith(Parameterized.class)
 public class ParserErrorHandlingTest {
 
-    private final String invalidExpr;
-    private final Token unexpected;
-    private final Token.Type[] expected;
-
-    public ParserErrorHandlingTest(
-        String invalidExpr,
-        Token unexpected,
-        Token.Type[] expected
-    ) {
-        this.invalidExpr = invalidExpr;
-        this.unexpected  = unexpected;
-        this.expected    = expected;
-    }
-
-    @Test
-    public void shouldCorrectlyHandleParseErrors() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void shouldCorrectlyHandleParseErrors(String invalidExpr, Token unexpected, Token.Type[] expected) {
         try {
             ExpressionParser.newInstance().parse(invalidExpr);
         } catch (UnexpectedTokenException e) {
@@ -65,16 +53,14 @@ public class ParserErrorHandlingTest {
         }
         fail("Uncaught exception");
     }
-
-    @Parameters(name = "{0}")
-    public static Collection<Object[]> parameters() {
-        return Arrays.asList(new Object[][] {
-            { "1)",           new Token(RIGHT_PAREN, ")", 1),  new Token.Type[] { EOI } },
-            { "(>1.0.1",      new Token(EOI, null, 7),         new Token.Type[] { RIGHT_PAREN } },
-            { "((>=1 & <2)",  new Token(EOI, null, 11),        new Token.Type[] { RIGHT_PAREN } },
-            { ">=1.0.0 &",    new Token(EOI, null, 9),         new Token.Type[] { NUMERIC } },
-            { "(>2.0 |)",     new Token(RIGHT_PAREN, ")", 7),  new Token.Type[] { NUMERIC } },
-            { "& 1.2",        new Token(AND, "&", 0),          new Token.Type[] { NUMERIC } },
-        });
+    public static Stream<Arguments> parameters() {
+        return Stream.of(
+            arguments( "1)",           new Token(RIGHT_PAREN, ")", 1),  new Token.Type[] { EOI } ),
+            arguments( "(>1.0.1",      new Token(EOI, null, 7),         new Token.Type[] { RIGHT_PAREN } ),
+            arguments( "((>=1 & <2)",  new Token(EOI, null, 11),        new Token.Type[] { RIGHT_PAREN } ),
+            arguments( ">=1.0.0 &",    new Token(EOI, null, 9),         new Token.Type[] { NUMERIC } ),
+            arguments( "(>2.0 |)",     new Token(RIGHT_PAREN, ")", 7),  new Token.Type[] { NUMERIC } ),
+            arguments( "& 1.2",        new Token(AND, "&", 0),          new Token.Type[] { NUMERIC } )
+        );
     }
 }

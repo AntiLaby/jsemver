@@ -24,19 +24,17 @@
 package com.github.zafarkhaja.semver.expr;
 
 import com.github.zafarkhaja.semver.expr.Lexer.Token;
-import org.junit.Test;
-import org.junit.experimental.runners.Enclosed;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Nested;
 import static com.github.zafarkhaja.semver.expr.Lexer.Token.Type.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
  * @author Zafar Khaja &lt;zafarkhaja@gmail.com&gt;
  */
-@RunWith(Enclosed.class)
 public class LexerTokenTest {
-
+    @Nested
     public static class EqualsMethodTest {
 
         @Test
@@ -106,7 +104,7 @@ public class LexerTokenTest {
             assertFalse(t1.equals(t2));
         }
     }
-
+    @Nested
     public static class HashCodeMethodTest {
 
         @Test

@@ -23,23 +23,21 @@
  */
 package com.github.zafarkhaja.semver;
 
-import org.junit.Test;
-import org.junit.experimental.runners.Enclosed;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Nested;
 
 import java.io.*;
 
 import static com.github.zafarkhaja.semver.expr.CompositeExpression.Helper.gte;
 import static com.github.zafarkhaja.semver.expr.CompositeExpression.Helper.lt;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
  * @author Zafar Khaja &lt;zafarkhaja@gmail.com&gt;
  */
-@RunWith(Enclosed.class)
 public class VersionTest {
-
+    @Nested
     public static class CoreFunctionalityTest {
 
         @Test
@@ -354,7 +352,7 @@ public class VersionTest {
             assertFalse(v1.isMinorVersionCompatible(v3));
         }
     }
-
+    @Nested
     public static class EqualsMethodTest {
 
         @Test
@@ -410,7 +408,7 @@ public class VersionTest {
             assertTrue(v1.equals(v2));
         }
     }
-
+    @Nested
     public static class HashCodeMethodTest {
 
         @Test
@@ -421,7 +419,7 @@ public class VersionTest {
             assertEquals(v1.hashCode(), v2.hashCode());
         }
     }
-
+    @Nested
     public static class ToStringMethodTest {
 
         @Test
@@ -431,7 +429,7 @@ public class VersionTest {
             assertEquals(value, v.toString());
         }
     }
-
+    @Nested
     public static class BuilderTest {
 
         @Test
@@ -482,7 +480,7 @@ public class VersionTest {
             assertEquals(Version.valueOf("1.0.0-alpha+build"), version);
         }
     }
-
+    @Nested
     public static class BuildAwareOrderTest {
 
         @Test
@@ -507,7 +505,7 @@ public class VersionTest {
             }
         }
     }
-
+    @Nested
     public static class SerializationTest {
 
         @Test

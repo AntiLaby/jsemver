@@ -24,41 +24,26 @@
 package com.github.zafarkhaja.semver;
 
 import com.github.zafarkhaja.semver.VersionParser.CharType;
-import java.util.Arrays;
-import java.util.Collection;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import java.util.stream.Stream;
+
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
 import static com.github.zafarkhaja.semver.VersionParser.CharType.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 /**
  *
  * @author Zafar Khaja &lt;zafarkhaja@gmail.com&gt;
  */
-@RunWith(Parameterized.class)
 public class ParserErrorHandlingTest {
 
-    private final String invalidVersion;
-    private final Character unexpected;
-    private final int position;
-    private final CharType[] expected;
-
-    public ParserErrorHandlingTest(
-        String invalidVersion,
-        Character unexpected,
-        int position,
-        CharType[] expected
-    ) {
-        this.invalidVersion = invalidVersion;
-        this.unexpected = unexpected;
-        this.position = position;
-        this.expected = expected;
-    }
-
-    @Test
-    public void shouldCorrectlyHandleParseErrors() {
+    @ParameterizedTest
+    @MethodSource("parameters")
+    public void shouldCorrectlyHandleParseErrors(String invalidVersion,
+        Character unexpected, int position, CharType[] expected) {
         try {
             VersionParser.parseValidSemVer(invalidVersion);
         } catch (UnexpectedCharacterException e) {
@@ -78,34 +63,34 @@ public class ParserErrorHandlingTest {
         fail("Uncaught exception");
     }
 
-    @Parameters(name = "{0}")
-    public static Collection<Object[]> parameters() {
-        return Arrays.asList(new Object[][] {
-            { "1 ",           ' ',  1,  new CharType[] { HYPHEN, PLUS, EOI } },
-            { "1.",           null, 2,  new CharType[] { DIGIT } },
-            { "1.2.",         null, 4,  new CharType[] { DIGIT } },
-            { "a.b.c",        'a',  0,  new CharType[] { DIGIT } },
-            { "1.b.c",        'b',  2,  new CharType[] { DIGIT } },
-            { "1.2.c",        'c',  4,  new CharType[] { DIGIT } },
-            { "!.2.3",        '!',  0,  new CharType[] { DIGIT } },
-            { "1.!.3",        '!',  2,  new CharType[] { DIGIT } },
-            { "1.2.!",        '!',  4,  new CharType[] { DIGIT } },
-            { "v1.2.3",       'v',  0,  new CharType[] { DIGIT } },
-            { "1.2.3-",       null, 6,  new CharType[] { DIGIT, LETTER, HYPHEN } },
-            { "1.2. 3",       ' ',  4,  new CharType[] { DIGIT } },
-            { "1.2.3=alpha",  '=',  5,  new CharType[] { HYPHEN, PLUS, EOI } },
-            { "1.2.3~beta",   '~',  5,  new CharType[] { HYPHEN, PLUS, EOI } },
-            { "1.2.3-be$ta",  '$',  8,  new CharType[] { PLUS, EOI } },
-            { "1.2.3+b1+b2",  '+',  8,  new CharType[] { EOI } },
-            { "1.2.3-rc!",    '!',  8,  new CharType[] { PLUS, EOI } },
-            { "1.2.3-+",      '+',  6,  new CharType[] { DIGIT, LETTER, HYPHEN } },
-            { "1.2.3-@",      '@',  6,  new CharType[] { DIGIT, LETTER, HYPHEN } },
-            { "1.2.3+@",      '@',  6,  new CharType[] { DIGIT, LETTER, HYPHEN } },
-            { "1.2.3-rc.",    null, 9,  new CharType[] { DIGIT, LETTER, HYPHEN } },
-            { "1.2.3+b.",     null, 8,  new CharType[] { DIGIT, LETTER, HYPHEN } },
-            { "1.2.3-b.+b",   '+',  8,  new CharType[] { DIGIT, LETTER, HYPHEN } },
-            { "1.2.3-rc..",   '.',  9,  new CharType[] { DIGIT, LETTER, HYPHEN } },
-            { "1.2.3-a+b..",  '.',  10, new CharType[] { DIGIT, LETTER, HYPHEN } },
-        });
+
+    public static Stream<Arguments> parameters() {
+        return Stream.of(
+            arguments( "1 ",           ' ',  1,  new CharType[] { HYPHEN, PLUS, EOI } ),
+            arguments( "1.",           null, 2,  new CharType[] { DIGIT } ),
+            arguments( "1.2.",         null, 4,  new CharType[] { DIGIT } ),
+            arguments( "a.b.c",        'a',  0,  new CharType[] { DIGIT } ),
+            arguments( "1.b.c",        'b',  2,  new CharType[] { DIGIT } ),
+            arguments( "1.2.c",        'c',  4,  new CharType[] { DIGIT } ),
+            arguments( "!.2.3",        '!',  0,  new CharType[] { DIGIT } ),
+            arguments( "1.!.3",        '!',  2,  new CharType[] { DIGIT } ),
+            arguments( "1.2.!",        '!',  4,  new CharType[] { DIGIT } ),
+            arguments( "v1.2.3",       'v',  0,  new CharType[] { DIGIT } ),
+            arguments( "1.2.3-",       null, 6,  new CharType[] { DIGIT, LETTER, HYPHEN } ),
+            arguments( "1.2. 3",       ' ',  4,  new CharType[] { DIGIT } ),
+            arguments( "1.2.3=alpha",  '=',  5,  new CharType[] { HYPHEN, PLUS, EOI } ),
+            arguments( "1.2.3~beta",   '~',  5,  new CharType[] { HYPHEN, PLUS, EOI } ),
+            arguments( "1.2.3-be$ta",  '$',  8,  new CharType[] { PLUS, EOI } ),
+            arguments( "1.2.3+b1+b2",  '+',  8,  new CharType[] { EOI } ),
+            arguments( "1.2.3-rc!",    '!',  8,  new CharType[] { PLUS, EOI } ),
+            arguments( "1.2.3-+",      '+',  6,  new CharType[] { DIGIT, LETTER, HYPHEN } ),
+            arguments( "1.2.3-@",      '@',  6,  new CharType[] { DIGIT, LETTER, HYPHEN } ),
+            arguments( "1.2.3+@",      '@',  6,  new CharType[] { DIGIT, LETTER, HYPHEN } ),
+            arguments( "1.2.3-rc.",    null, 9,  new CharType[] { DIGIT, LETTER, HYPHEN } ),
+            arguments( "1.2.3+b.",     null, 8,  new CharType[] { DIGIT, LETTER, HYPHEN } ),
+            arguments( "1.2.3-b.+b",   '+',  8,  new CharType[] { DIGIT, LETTER, HYPHEN } ),
+            arguments( "1.2.3-rc..",   '.',  9,  new CharType[] { DIGIT, LETTER, HYPHEN } ),
+            arguments( "1.2.3-a+b..",  '.',  10, new CharType[] { DIGIT, LETTER, HYPHEN } )
+        );
     }
 }
