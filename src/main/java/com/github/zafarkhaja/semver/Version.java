@@ -25,8 +25,8 @@ package com.github.zafarkhaja.semver;
 
 import com.github.zafarkhaja.semver.expr.Expression;
 import com.github.zafarkhaja.semver.expr.ExpressionParser;
-import com.github.zafarkhaja.semver.expr.LexerException;
-import com.github.zafarkhaja.semver.expr.UnexpectedTokenException;
+import com.github.zafarkhaja.semver.compiling.LexerException;
+import com.github.zafarkhaja.semver.compiling.UnexpectedTokenException;
 
 import java.io.Serializable;
 import java.util.Comparator;
@@ -317,7 +317,7 @@ public class Version implements Comparable<Version>, Serializable {
      *         SemVer Expression or {@code false} otherwise
      * @throws ParseException in case of a general parse error
      * @throws LexerException when encounters an illegal character
-     * @throws UnexpectedTokenException when comes across an unexpected token
+     * @throws UnexpectedTokenException when comes across an unexpectedToken token
      * @since 0.7.0
      */
     public boolean satisfies(String expr) {
@@ -336,7 +336,7 @@ public class Version implements Comparable<Version>, Serializable {
      * @since 0.9.0
      */
     public boolean satisfies(Expression expr) {
-        return expr.interpret(this);
+        return expr.test(this);
     }
 
     //TODO: write Tests

@@ -28,7 +28,7 @@ import com.github.zafarkhaja.semver.util.UnexpectedElementException;
 import java.util.Arrays;
 
 /**
- * Thrown when attempting to consume a character of unexpected types.
+ * Thrown when attempting to consume a character of unexpectedToken types.
  *
  * This exception is a wrapper exception extending {@code ParseException}.
  *
@@ -38,12 +38,12 @@ import java.util.Arrays;
 public class UnexpectedCharacterException extends ParseException {
 
     /**
-     * The unexpected character.
+     * The unexpectedToken character.
      */
     private final Character unexpected;
 
     /**
-     * The position of the unexpected character.
+     * The position of the unexpectedToken character.
      */
     private final int position;
 
@@ -66,10 +66,10 @@ public class UnexpectedCharacterException extends ParseException {
 
     /**
      * Constructs a {@code UnexpectedCharacterException} instance
-     * with the unexpected character, its position and the expected types.
+     * with the unexpectedToken character, its position and the expected types.
      *
-     * @param unexpected the unexpected character
-     * @param position the position of the unexpected character
+     * @param unexpected the unexpectedToken character
+     * @param position the position of the unexpectedToken character
      * @param expected an array of the expected character types
      */
     UnexpectedCharacterException(
@@ -83,18 +83,18 @@ public class UnexpectedCharacterException extends ParseException {
     }
 
     /**
-     * Gets the unexpected character.
+     * Gets the unexpectedToken character.
      *
-     * @return the unexpected character
+     * @return the unexpectedToken character
      */
     Character getUnexpectedCharacter() {
         return unexpected;
     }
 
     /**
-     * Gets the position of the unexpected character.
+     * Gets the position of the unexpectedToken character.
      *
-     * @return the position of the unexpected character
+     * @return the position of the unexpectedToken character
      */
     int getPosition() {
         return position;
@@ -116,7 +116,7 @@ public class UnexpectedCharacterException extends ParseException {
 
     /**
      * Returns the string representation of this exception
-     * containing the information about the unexpected
+     * containing the information about the unexpectedToken
      * element and, if available, about the expected types.
      *
      * @return the string representation of this exception
