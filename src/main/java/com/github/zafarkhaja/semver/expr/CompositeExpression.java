@@ -246,21 +246,21 @@ public class CompositeExpression implements Expression {
     /**
      * Interprets the expression.
      *
-     * @param version a {@code Version} string to interpret against
+     * @param version a {@code Version} string to test against
      * @return the result of the expression interpretation
      * @throws IllegalArgumentException if the input string is {@code NULL} or empty
      * @throws ParseException when invalid version string is provided
      * @throws UnexpectedCharacterException is a special case of {@code ParseException}
      */
     public boolean interpret(String version) {
-        return interpret(Version.valueOf(version));
+        return test(Version.valueOf(version));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean interpret(Version version) {
-        return exprTree.interpret(version);
+    public boolean test(Version version) {
+        return exprTree.test(version);
     }
 }

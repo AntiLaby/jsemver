@@ -25,6 +25,8 @@ package com.github.zafarkhaja.semver.expr;
 
 import com.github.zafarkhaja.semver.Version;
 
+import java.util.function.Predicate;
+
 /**
  * The {@code Expression} interface is to be implemented
  * by the nodes of the Abstract Syntax Tree produced by
@@ -33,13 +35,4 @@ import com.github.zafarkhaja.semver.Version;
  * @author Zafar Khaja &lt;zafarkhaja@gmail.com&gt;
  * @since 0.7.0
  */
-public interface Expression {
-
-    /**
-     * Interprets the expression.
-     *
-     * @param version the version to interpret against
-     * @return the result of the expression interpretation
-     */
-    boolean interpret(Version version);
-}
+public interface Expression extends Predicate<Version> {}

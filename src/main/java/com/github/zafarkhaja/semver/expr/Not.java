@@ -50,12 +50,12 @@ class Not implements Expression {
     /**
      * Negates the given expression.
      *
-     * @param version the version to interpret against
+     * @param version the version to test against
      * @return {@code true} if the given expression evaluates to
      *         {@code false} and {@code false} otherwise
      */
     @Override
-    public boolean interpret(Version version) {
-        return !expr.interpret(version);
+    public boolean test(Version version) {
+        return !expr.test(version);
     }
 }

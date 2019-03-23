@@ -58,12 +58,12 @@ class Or implements Expression {
     /**
      * Checks if one of the operands evaluates to {@code true}.
      *
-     * @param version the version to interpret against
+     * @param version the version to test against
      * @return {@code true} if one of the operands evaluates to {@code true}
      *         or {@code false} otherwise
      */
     @Override
-    public boolean interpret(Version version) {
-        return left.interpret(version) || right.interpret(version);
+    public boolean test(Version version) {
+        return left.test(version) || right.test(version);
     }
 }

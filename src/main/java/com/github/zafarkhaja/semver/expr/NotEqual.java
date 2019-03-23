@@ -56,7 +56,7 @@ class NotEqual implements Expression {
      *         parsed version or {@code false} otherwise
      */
     @Override
-    public boolean interpret(Version version) {
+    public boolean test(Version version) {
         return !version.equals(parsedVersion);
     }
 }
