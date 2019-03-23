@@ -23,6 +23,9 @@
  */
 package com.github.zafarkhaja.semver.expr;
 
+import com.github.zafarkhaja.semver.compiling.Lexer;
+import com.github.zafarkhaja.semver.compiling.Token;
+import com.github.zafarkhaja.semver.compiling.LexerException;
 import com.github.zafarkhaja.semver.util.Stream;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,17 +38,17 @@ import java.util.regex.Pattern;
  * @author Zafar Khaja &lt;zafarkhaja@gmail.com&gt;
  * @since 0.7.0
  */
-class Lexer {
+class ExprLexer extends Lexer<ExprLexer.ExprToken> {
 
     /**
      * This class holds the information about lexemes in the input stream.
      */
-    static class Token {
+    static class ExprToken extends Token<ExprToken> {
 
         /**
          * Valid token types.
          */
-        enum Type implements Stream.ElementType<Token> {
+        enum Type implements Token.Type<ExprToken> {
 
             NUMERIC("0|[1-9][0-9]*"),
             DOT("\\."),
@@ -79,7 +82,7 @@ class Lexer {
              * @param regexp the regular expression for the pattern
              * @see #pattern
              */
-            private Type(String regexp) {
+            Type(String regexp) {
                 pattern = Pattern.compile("^(" + regexp + ")");
             }
 
@@ -97,28 +100,10 @@ class Lexer {
              * {@inheritDoc}
              */
             @Override
-            public boolean isMatchedBy(Token token) {
-                if (token == null) {
-                    return false;
-                }
-                return this == token.type;
+            public boolean isMatchedBy(ExprToken token) {
+                return token != null && this == token.type;
             }
         }
-
-        /**
-         * The type of this token.
-         */
-        final Type type;
-
-        /**
-         * The lexeme of this token.
-         */
-        final String lexeme;
-
-        /**
-         * The position of this token.
-         */
-        final int position;
 
         /**
          * Constructs a {@code Token} instance
@@ -128,61 +113,15 @@ class Lexer {
          * @param lexeme the lexeme of this token
          * @param position the position of this token
          */
-        Token(Type type, String lexeme, int position) {
-            this.type = type;
-            this.lexeme = (lexeme == null) ? "" : lexeme;
-            this.position = position;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public boolean equals(Object other) {
-            if (this == other) {
-                return true;
-            }
-            if (!(other instanceof Token)) {
-                return false;
-            }
-            Token token = (Token) other;
-            return
-                type.equals(token.type) &&
-                lexeme.equals(token.lexeme) &&
-                position == token.position;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public int hashCode() {
-            int hash = 5;
-            hash = 71 * hash + type.hashCode();
-            hash = 71 * hash + lexeme.hashCode();
-            hash = 71 * hash + position;
-            return hash;
-        }
-
-        /**
-         * Returns the string representation of this token.
-         *
-         * @return the string representation of this token
-         */
-        @Override
-        public String toString() {
-            return String.format(
-                "%s(%s) at position %d",
-                type.name(),
-                lexeme, position
-            );
+        ExprToken(Type type, String lexeme, int position) {
+            super(type, lexeme, position);
         }
     }
 
     /**
      * Constructs a {@code Lexer} instance.
      */
-    Lexer() {
+    ExprLexer() {
 
     }
 
@@ -193,18 +132,18 @@ class Lexer {
      * @return a stream of tokens
      * @throws LexerException when encounters an illegal character
      */
-    Stream<Token> tokenize(String input) {
-        List<Token> tokens = new ArrayList<Token>();
+    protected Stream<ExprToken> tokenize(String input) {
+        List<ExprToken> tokens = new ArrayList<ExprToken>();
         int tokenPos = 0;
         while (!input.isEmpty()) {
             boolean matched = false;
-            for (Token.Type tokenType : Token.Type.values()) {
+            for (ExprToken.Type tokenType : ExprToken.Type.values()) {
                 Matcher matcher = tokenType.pattern.matcher(input);
                 if (matcher.find()) {
                     matched = true;
                     input = matcher.replaceFirst("");
-                    if (tokenType != Token.Type.WHITESPACE) {
-                        tokens.add(new Token(
+                    if (tokenType != ExprToken.Type.WHITESPACE) {
+                        tokens.add(new ExprToken(
                             tokenType,
                             matcher.group(),
                             tokenPos
@@ -218,7 +157,7 @@ class Lexer {
                 throw new LexerException(input);
             }
         }
-        tokens.add(new Token(Token.Type.EOI, null, tokenPos));
-        return new Stream<Token>(tokens.toArray(new Token[tokens.size()]));
+        tokens.add(new ExprToken(ExprToken.Type.EOI, null, tokenPos));
+        return new Stream<>(tokens.toArray(new ExprToken[tokens.size()]));
     }
 }
