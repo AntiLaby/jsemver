@@ -420,7 +420,14 @@ public class Version implements Comparable<Version>, Serializable {
      * @return a new instance of the {@code Version} class
      */
     public Version incrementMajorVersion() {
-        return new Version(normal.incrementMajor());
+        if (preRelease == MetadataVersion.NULL || normal.getPatch() != 0 || normal.getMinor() != 0) {
+            return new Version(normal.incrementMajor());
+        }
+        return new Version(normal);
+    }
+
+    public Version incrementPreMajorVersion() {
+        return incrementMajorVersion("0");
     }
 
     /**
@@ -445,7 +452,19 @@ public class Version implements Comparable<Version>, Serializable {
      * @return a new instance of the {@code Version} class
      */
     public Version incrementMinorVersion() {
-        return new Version(normal.incrementMinor());
+        if (preRelease == MetadataVersion.NULL || normal.getPatch() != 0) {
+            return new Version(normal.incrementMinor());
+        }
+        return new Version(normal);
+    }
+
+    /**
+     * Increments the minor version.
+     *
+     * @return a new instance of the {@code Version} class
+     */
+    public Version incrementPreMinorVersion() {
+        return incrementMinorVersion("0");
     }
 
     /**
@@ -470,7 +489,13 @@ public class Version implements Comparable<Version>, Serializable {
      * @return a new instance of the {@code Version} class
      */
     public Version incrementPatchVersion() {
-        return new Version(normal.incrementPatch());
+        if (preRelease == MetadataVersion.NULL)
+            return new Version(normal.incrementPatch());
+        return new Version(normal);
+    }
+
+    public Version incrementPrePatchVersion() {
+        return incrementPatchVersion("0");
     }
 
     /**

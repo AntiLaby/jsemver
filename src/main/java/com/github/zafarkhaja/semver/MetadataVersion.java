@@ -59,7 +59,7 @@ class MetadataVersion implements Comparable<MetadataVersion>, Serializable {
          */
         @Override
         MetadataVersion increment() {
-            throw new NullPointerException("Metadata version is NULL");
+            return new MetadataVersion(new String[] {"0"});
         }
 
         /**
@@ -128,7 +128,7 @@ class MetadataVersion implements Comparable<MetadataVersion>, Serializable {
             ids[ids.length - 1] = String.valueOf(++intId);
         } else {
             ids = Arrays.copyOf(ids, ids.length + 1);
-            ids[ids.length - 1] = String.valueOf(1);
+            ids[ids.length - 1] = String.valueOf(0);
         }
         return new MetadataVersion(ids);
     }
