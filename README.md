@@ -302,6 +302,21 @@ other interesting capabilities of the SemVer Expressions external DSL.
 * Negation operator - `!(1.x)` which is equivalent to `<1.0.0 & >=2.0.0`
 * Parenthesized expressions - `~1.3 | (1.4.* & !=1.4.5) | ~2`
 
+### Maven version ranges
+Since 0.10.0, maven version ranges are supported.
+ Expression:       | Range                 | Comment
+ ----------------- | --------------------- | ---
+ 1.0	           | x >= 1.0 *            | * The default Maven meaning for 1.0 is everything (,) but with 1.0 recommended.
+                   |                       |   Obviously this doesn't work for enforcing versions here, so it has been redefined as a minimum version.
+ \(,1.0\]          | x <= 1.0              |
+ \(,1.0\)          | x < 1.0               |
+ \[1.0\]	       | x == 1.0              |
+ \[1.0,\)          | x >= 1.0              |
+ \(1.0,\)          | x > 1.0               |
+ \(1.0,2.0\)       | 1.0 < x < 2.0         |
+ \[1.0,2.0\]       | 1.0 <= x <= 2.0       |
+ \(,1.0\],\[1.2,\) | x <= 1.0 or x >= 1.2. | Multiple sets are comma-separated
+ \(,1.1\),\(1.1,\) | x != 1.1              |
 
 Exception Handling
 ------------------
