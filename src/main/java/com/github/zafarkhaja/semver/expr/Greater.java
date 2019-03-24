@@ -58,6 +58,6 @@ class Greater implements Expression {
      */
     @Override
     public boolean test(Version version) {
-        return version.greaterThan(parsedVersion);
+        return version.compareWithBuildsTo(parsedVersion) > 0;
     }
 }

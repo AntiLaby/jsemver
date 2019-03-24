@@ -58,6 +58,6 @@ class Less implements Expression {
      */
     @Override
     public boolean test(Version version) {
-        return version.lessThan(parsedVersion);
+        return version.compareWithBuildsTo(parsedVersion) > 0;
     }
 }

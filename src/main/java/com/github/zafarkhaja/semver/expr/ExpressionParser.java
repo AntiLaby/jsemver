@@ -234,17 +234,17 @@ public class ExpressionParser implements Parser<Expression> {
      */
     private CompositeExpression parseTildeRange() {
         consumeNextToken(TILDE);
-        int major = intOf(consumeNextToken(NUMERIC).lexeme);
+        int major = Integer.parseInt(consumeNextToken(NUMERIC).lexeme);
         if (!tokens.positiveLookahead(DOT)) {
             return gte(versionFor(major)).and(lt(versionFor(major + 1)));
         }
         consumeNextToken(DOT);
-        int minor = intOf(consumeNextToken(NUMERIC).lexeme);
+        int minor = Integer.parseInt(consumeNextToken(NUMERIC).lexeme);
         if (!tokens.positiveLookahead(DOT)) {
             return gte(versionFor(major, minor)).and(lt(versionFor(major, minor + 1)));
         }
         consumeNextToken(DOT);
-        int patch = intOf(consumeNextToken(NUMERIC).lexeme);
+        int patch = Integer.parseInt(consumeNextToken(NUMERIC).lexeme);
         return gte(versionFor(major, minor, patch)).and(lt(versionFor(major, minor + 1)));
     }
 
@@ -261,19 +261,19 @@ public class ExpressionParser implements Parser<Expression> {
      */
     private CompositeExpression parseCaretRange() {
         consumeNextToken(CARET);
-        int major = intOf(consumeNextToken(NUMERIC).lexeme);
+        int major = Integer.parseInt(consumeNextToken(NUMERIC).lexeme);
         if (!tokens.positiveLookahead(DOT)) {
             return gte(versionFor(major)).and(lt(versionFor(major + 1)));
         }
         consumeNextToken(DOT);
-        int minor = intOf(consumeNextToken(NUMERIC).lexeme);
+        int minor = Integer.parseInt(consumeNextToken(NUMERIC).lexeme);
         if (!tokens.positiveLookahead(DOT)) {
             Version lower = versionFor(major, minor);
             Version upper = major > 0 ? lower.incrementMajorVersion() : lower.incrementMinorVersion();
             return gte(lower).and(lt(upper));
         }
         consumeNextToken(DOT);
-        int patch = intOf(consumeNextToken(NUMERIC).lexeme);
+        int patch = Integer.parseInt(consumeNextToken(NUMERIC).lexeme);
         Version version = versionFor(major, minor, patch);
         CompositeExpression gte = gte(version);
         if (major > 0) {
@@ -328,7 +328,7 @@ public class ExpressionParser implements Parser<Expression> {
             return gte(versionFor(0, 0, 0));
         }
 
-        int major = intOf(consumeNextToken(NUMERIC).lexeme);
+        int major = Integer.parseInt(consumeNextToken(NUMERIC).lexeme);
         consumeNextToken(DOT);
         if (tokens.positiveLookahead(WILDCARD)) {
             tokens.consume();
@@ -340,7 +340,7 @@ public class ExpressionParser implements Parser<Expression> {
             return gte(versionFor(major)).and(lt(versionFor(major + 1)));
         }
 
-        int minor = intOf(consumeNextToken(NUMERIC).lexeme);
+        int minor = Integer.parseInt(consumeNextToken(NUMERIC).lexeme);
         consumeNextToken(DOT);
         consumeNextToken(WILDCARD);
         return gte(versionFor(major, minor)).and(lt(versionFor(major, minor + 1)));
@@ -403,12 +403,12 @@ public class ExpressionParser implements Parser<Expression> {
      * @return the expression AST
      */
     private CompositeExpression parsePartialVersionRange() {
-        int major = intOf(consumeNextToken(NUMERIC).lexeme);
+        int major = Integer.parseInt(consumeNextToken(NUMERIC).lexeme);
         if (!tokens.positiveLookahead(DOT)) {
             return gte(versionFor(major)).and(lt(versionFor(major + 1)));
         }
         consumeNextToken(DOT);
-        int minor = intOf(consumeNextToken(NUMERIC).lexeme);
+        int minor = Integer.parseInt(consumeNextToken(NUMERIC).lexeme);
         return gte(versionFor(major, minor)).and(lt(versionFor(major, minor + 1)));
     }
 
@@ -420,24 +420,43 @@ public class ExpressionParser implements Parser<Expression> {
      * <version> ::= <major>
      *             | <major> "." <minor>
      *             | <major> "." <minor> "." <patch>
+     *             | <major> "." <minor> "." <patch> "-" <pre>
+     *             | <major> "." <minor> "." <patch> "+" <build>
+     *             | <major> "." <minor> "." <patch> "-" <pre> "+" <build>
      * }
      * </pre>
      *
      * @return the parsed version
      */
     private Version parseVersion() {
-        int major = intOf(consumeNextToken(NUMERIC).lexeme);
+        int major = Integer.parseInt(consumeNextToken(NUMERIC).lexeme);
         int minor = 0;
         if (tokens.positiveLookahead(DOT)) {
             tokens.consume();
-            minor = intOf(consumeNextToken(NUMERIC).lexeme);
+            minor = Integer.parseInt(consumeNextToken(NUMERIC).lexeme);
         }
         int patch = 0;
         if (tokens.positiveLookahead(DOT)) {
             tokens.consume();
-            patch = intOf(consumeNextToken(NUMERIC).lexeme);
+            patch = Integer.parseInt(consumeNextToken(NUMERIC).lexeme);
         }
-        return versionFor(major, minor, patch);
+        StringBuilder pre = new StringBuilder();
+        if (tokens.positiveLookahead(HYPHEN) && tokens.lookahead(2).type == ALPHA_NUMERIC) {
+            tokens.consume();
+            while (tokens.positiveLookahead(ALPHA_NUMERIC, NUMERIC, DOT)) {
+                pre.append(tokens.consume(ALPHA_NUMERIC, NUMERIC, DOT).lexeme);
+        }}
+        StringBuilder build = new StringBuilder();
+        if (tokens.positiveLookahead(PLUS)) {
+            tokens.consume();
+            while (tokens.positiveLookahead(ALPHA_NUMERIC, NUMERIC, DOT)) {
+                build.append(tokens.consume(ALPHA_NUMERIC, NUMERIC, DOT).lexeme);
+            }
+        }
+        Version vtemp = Version.forIntegers(major, minor, patch);
+        if (pre.length() != 0) vtemp = vtemp.setPreReleaseVersion(pre.toString());
+        if (build.length() != 0) vtemp = vtemp.setBuildMetadata(build.toString());
+        return vtemp;
     }
 
     /**
@@ -452,13 +471,42 @@ public class ExpressionParser implements Parser<Expression> {
      *         the specified token type or {@code false} otherwise
      */
     private boolean isVersionFollowedBy(ElementType<ExprToken> type) {
-        EnumSet<ExprToken.Type> expected = EnumSet.of(NUMERIC, DOT);
         Iterator<ExprToken> it = tokens.iterator();
         ExprToken lookahead = null;
-        while (it.hasNext()) {
-            lookahead = it.next();
-            if (!expected.contains(lookahead.type)) {
+        ExprToken lookahead2 = null;
+        //skip first two nums and dots if possible else break
+        for (int i = 0; i < 2; i++) {
+            if (!it.hasNext() || (lookahead = it.next()).type != NUMERIC) {
+                if (!it.hasNext() || (lookahead2 = it.next()).type != NUMERIC && lookahead2.type != HYPHEN && lookahead2.type != PLUS)
+                    return type.isMatchedBy(lookahead);
                 break;
+            } if (!it.hasNext() || (lookahead = it.next()).type != DOT) {
+                    return type.isMatchedBy(lookahead);
+            }
+        }
+        lookahead = lookahead2 == null ? it.next() : lookahead2;
+        //skip last number if need be
+        if(lookahead.type == NUMERIC && it.hasNext()) lookahead = it.next();
+        //filter out pre hyphens
+        if(lookahead.type == HYPHEN && it.hasNext()) {
+            // if alphanumeric, skip to the next token that cannot be used to denote a pre version
+            ExprToken f = it.next();
+            if(f.type == ALPHA_NUMERIC) {
+                while (it.hasNext()) {
+                    lookahead = it.next();
+                    if (lookahead.type != ALPHA_NUMERIC && lookahead.type != NUMERIC && lookahead.type != DOT) break;
+                }
+            }
+        }
+        //skip builds
+        if(lookahead.type == PLUS && it.hasNext()) {
+            ExprToken f = it.next();
+            // if alphanumeric or numeric, skip to the next token that cannot be used to denote a build version
+            if(f.type == ALPHA_NUMERIC || f.type == NUMERIC) {
+                while (it.hasNext()) {
+                    lookahead = it.next();
+                    if (lookahead.type != ALPHA_NUMERIC && lookahead.type != NUMERIC && lookahead.type != DOT) break;
+                }
             }
         }
         return type.isMatchedBy(lookahead);
@@ -498,17 +546,6 @@ public class ExpressionParser implements Parser<Expression> {
     private Version versionFor(int major, int minor, int patch) {
         return Version.forIntegers(major, minor, patch);
     }
-
-    /**
-     * Returns a {@code int} representation of the specified string.
-     *
-     * @param value the string to convert into an integer
-     * @return the integer value of the specified string
-     */
-    private int intOf(String value) {
-        return Integer.parseInt(value);
-    }
-
     /**
      * Tries to consume the next token in the stream.
      *

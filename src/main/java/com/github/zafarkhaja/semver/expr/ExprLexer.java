@@ -51,8 +51,11 @@ class ExprLexer extends Lexer<ExprLexer.ExprToken> {
         enum Type implements Token.Type<ExprToken> {
 
             NUMERIC("0|[1-9][0-9]*"),
+            WILDCARD("[\\*xX]"),
+            ALPHA_NUMERIC("(\\d*\\p{L}(\\p{L}|\\d)*)|0\\d+"),
             DOT("\\."),
             HYPHEN("-"),
+            PLUS("\\+"),
             EQUAL("="),
             NOT_EQUAL("!="),
             GREATER(">(?!=)"),
@@ -60,7 +63,6 @@ class ExprLexer extends Lexer<ExprLexer.ExprToken> {
             LESS("<(?!=)"),
             LESS_EQUAL("<="),
             TILDE("~"),
-            WILDCARD("[\\*xX]"),
             CARET("\\^"),
             AND("&"),
             OR("\\|"),

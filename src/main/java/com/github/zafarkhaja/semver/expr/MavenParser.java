@@ -98,19 +98,22 @@ public class MavenParser implements Parser<Predicate<Version>> {
             stream.consume();
             patch = Integer.parseInt(stream.consume(NUMERIC).lexeme);
         }
-        String pre = null;
+        StringBuilder pre = new StringBuilder();
         if (stream.positiveLookahead(HYPHEN)) {
             stream.consume();
-            pre = stream.consume(ALPHA_NUMERIC, NUMERIC).lexeme;
-        }
-        String build = null;
+            while (stream.positiveLookahead(ALPHA_NUMERIC, NUMERIC, DOT)) {
+                pre.append(stream.consume(ALPHA_NUMERIC, NUMERIC, DOT).lexeme);
+            }}
+        StringBuilder build = new StringBuilder();
         if (stream.positiveLookahead(PLUS)) {
             stream.consume();
-            build = stream.consume(ALPHA_NUMERIC, NUMERIC).lexeme;
+            while (stream.positiveLookahead(ALPHA_NUMERIC, NUMERIC, DOT)) {
+                build.append(stream.consume(ALPHA_NUMERIC, NUMERIC, DOT).lexeme);
+            }
         }
         Version vtemp = Version.forIntegers(major, minor, patch);
-        if (pre != null) vtemp = vtemp.setPreReleaseVersion(pre);
-        if (build != null) vtemp = vtemp.setBuildMetadata(build);
+        if (pre.length() != 0) vtemp = vtemp.setPreReleaseVersion(pre.toString());
+        if (build.length() != 0) vtemp = vtemp.setBuildMetadata(build.toString());
         return vtemp;
     }
 }

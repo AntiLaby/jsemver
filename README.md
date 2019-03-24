@@ -352,7 +352,7 @@ Library Additions by the AntiLaby team
 * Issues addressed in 0.10.0:
   * (#10), (#13),
     (#20), [#21](https://github.com/zafarkhaja/jsemver/issues/21),
-    [#22](https://github.com/zafarkhaja/jsemver/issues/22), (#24),
+    [#22](https://github.com/zafarkhaja/jsemver/issues/22), [#24](https://github.com/zafarkhaja/jsemver/issues/24),
     [#26](https://github.com/zafarkhaja/jsemver/issues/26), [#27](https://github.com/zafarkhaja/jsemver/issues/27),
     [#32](https://github.com/zafarkhaja/jsemver/issues/32), (#35),
     [#36](https://github.com/zafarkhaja/jsemver/issues/36), [#38](https://github.com/zafarkhaja/jsemver/issues/38),

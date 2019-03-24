@@ -152,6 +152,14 @@ public class ExpressionParserTest {
     }
 
     @Test
+    public void shouldNotGetConfusedByPreReleaseHyphens() {
+        ExpressionParser parser = new ExpressionParser(new ExprLexer());
+        Expression range = parser.parse("1.0.0-pre2 - 2.0.0");
+        assertTrue(range.test(Version.valueOf("1.2.3")));
+        assertFalse(range.test(Version.valueOf("3.2.1")));
+    }
+
+    @Test
     public void shouldParseMultipleRangesJoinedWithAnd() {
         ExpressionParser parser = new ExpressionParser(new ExprLexer());
         Expression and = parser.parse(">=1.0.0 & <2.0.0");
@@ -209,7 +217,7 @@ public class ExpressionParserTest {
     @Test
     public void shouldParseComplexExpressions() {
         ExpressionParser parser = new ExpressionParser(new ExprLexer());
-        Expression expr = parser.parse("((>=1.0.1 & <2) | (>=3.0 & <4)) & ((1-1.5) & (~1.5))");
+        Expression expr = parser.parse("((>=1.0.1+33 & <2+djjj3) | (>=3.0-rc.1 & <4)) & ((1-pre2+3.2-1.5) & (~1.5))");
         assertTrue(expr.test(Version.valueOf("1.5.0")));
         assertFalse(expr.test(Version.valueOf("2.5.0")));
     }
