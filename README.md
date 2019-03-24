@@ -358,7 +358,7 @@ Library Additions by the AntiLaby team
     [#36](https://github.com/zafarkhaja/jsemver/issues/36), [#38](https://github.com/zafarkhaja/jsemver/issues/38),
     (#40), (#42),
     [#43](https://github.com/zafarkhaja/jsemver/issues/43), [#44](https://github.com/zafarkhaja/jsemver/issues/44),
-    (#45), [#47](https://github.com/zafarkhaja/jsemver/issues/47)
+    [#45](https://github.com/zafarkhaja/jsemver/issues/45), [#47](https://github.com/zafarkhaja/jsemver/issues/47)
   Issues in parenthesis are not dealt with yet, the others were implemented
 * Issues Remaining:
   * #9, #12, #15, #41

@@ -303,8 +303,8 @@ public class ExpressionParser implements Parser<Expression> {
      *
      * <pre>
      * {@literal
-     * <wildcard-range> ::= <wildcard>
-     *                    | <major> "." <wildcard>
+     * <wildcard-range> ::= <wildcard> (optional "." <wildcard> (optional "." <wildcard>))
+     *                    | <major> "." <wildcard> (optional "." <wildcard>)
      *                    | <major> "." <minor> "." <wildcard>
      *
      * <wildcard> ::= "*" | "x" | "X"
@@ -316,6 +316,15 @@ public class ExpressionParser implements Parser<Expression> {
     private CompositeExpression parseWildcardRange() {
         if (tokens.positiveLookahead(WILDCARD)) {
             tokens.consume();
+            //silently omit trailing .x in x.x or x.x.x
+            if(tokens.positiveLookahead(DOT)) {
+              tokens.consume();
+              tokens.consume(WILDCARD);
+            }
+            if(tokens.positiveLookahead(DOT)) {
+                tokens.consume();
+                tokens.consume(WILDCARD);
+            }
             return gte(versionFor(0, 0, 0));
         }
 
@@ -323,6 +332,11 @@ public class ExpressionParser implements Parser<Expression> {
         consumeNextToken(DOT);
         if (tokens.positiveLookahead(WILDCARD)) {
             tokens.consume();
+            //silently omit trailing .x in eg. 2.x.x
+            if(tokens.positiveLookahead(DOT)) {
+                tokens.consume();
+                tokens.consume(WILDCARD);
+            }
             return gte(versionFor(major)).and(lt(versionFor(major + 1)));
         }
 

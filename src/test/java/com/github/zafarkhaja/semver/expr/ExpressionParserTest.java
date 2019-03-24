@@ -124,14 +124,23 @@ public class ExpressionParserTest {
     @Test
     public void shouldParseWildcardRange() {
         ExpressionParser parser = new ExpressionParser(new ExprLexer());
-        Expression expr1 = parser.parse("1.*");
-        assertTrue(expr1.test(Version.valueOf("1.2.3")));
-        assertFalse(expr1.test(Version.valueOf("3.2.1")));
-        Expression expr2 = parser.parse("1.2.x");
-        assertTrue(expr2.test(Version.valueOf("1.2.3")));
-        assertFalse(expr2.test(Version.valueOf("1.3.2")));
-        Expression expr3 = parser.parse("X");
-        assertTrue(expr3.test(Version.valueOf("1.2.3")));
+        Version v1_2_3 = Version.forIntegers(1, 2, 3);
+        Version v3_2_1 = Version.forIntegers(3, 2, 1);
+        Expression expr1 = parser.parse("1.2.*");
+        assertTrue(expr1.test(v1_2_3));
+        assertFalse(expr1.test(v3_2_1));
+        Expression expr2 = parser.parse("1.x");
+        assertTrue(expr2.test(v1_2_3));
+        assertFalse(expr2.test(v3_2_1));
+        Expression expr3 = parser.parse("1.x.x");
+        assertTrue(expr3.test(v1_2_3));
+        assertFalse(expr3.test(v3_2_1));
+        Expression expr4 = parser.parse("X");
+        assertTrue(expr4.test(v1_2_3));
+        Expression expr5 = parser.parse("X.X");
+        assertTrue(expr5.test(v1_2_3));
+        Expression expr6 = parser.parse("X.X.X");
+        assertTrue(expr6.test(v1_2_3));
     }
 
     @Test
