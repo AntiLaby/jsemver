@@ -99,7 +99,7 @@ public class StreamTest {
         } catch (UnexpectedElementException e) {
             return;
         }
-        fail("Should raise error when unexpected element type is consumed");
+        fail("Should raise error when unexpectedToken element type is consumed");
     }
 
     @Test

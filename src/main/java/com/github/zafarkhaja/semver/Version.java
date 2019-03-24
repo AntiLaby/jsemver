@@ -23,13 +23,14 @@
  */
 package com.github.zafarkhaja.semver;
 
-import com.github.zafarkhaja.semver.expr.Expression;
 import com.github.zafarkhaja.semver.expr.ExpressionParser;
-import com.github.zafarkhaja.semver.expr.LexerException;
-import com.github.zafarkhaja.semver.expr.UnexpectedTokenException;
+import com.github.zafarkhaja.semver.compiling.LexerException;
+import com.github.zafarkhaja.semver.compiling.UnexpectedTokenException;
+import com.github.zafarkhaja.semver.expr.MavenParser;
 
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.function.Predicate;
 
 /**
  * The {@code Version} class is the main class of the Java SemVer library.
@@ -205,7 +206,7 @@ public class Version implements Comparable<Version>, Serializable {
                 if (v1.build == MetadataVersion.NULL ||
                     v2.build == MetadataVersion.NULL
                 ) {
-                    /**
+                    /*
                      * Build metadata should have a higher precedence
                      * than the associated normal version which is the
                      * opposite compared to pre-release versions.
@@ -308,35 +309,80 @@ public class Version implements Comparable<Version>, Serializable {
     }
 
     /**
-     * Checks if this version satisfies the specified SemVer Expression string.
+     * Checks if this version satisfies the specified Expression string.
+     * First checks for JSemVer Expression, if that fails it checks for a Maven-style version range.
      *
-     * This method is a part of the SemVer Expressions API.
+     * This method is a part of the Expressions API.
      *
-     * @param expr the SemVer Expression string
+     * @param expr the Expression string
      * @return {@code true} if this version satisfies the specified
-     *         SemVer Expression or {@code false} otherwise
+     *         Expression or {@code false} otherwise
      * @throws ParseException in case of a general parse error
      * @throws LexerException when encounters an illegal character
      * @throws UnexpectedTokenException when comes across an unexpected token
-     * @since 0.7.0
+     * @since 0.10.0
      */
     public boolean satisfies(String expr) {
-        Parser<Expression> parser = ExpressionParser.newInstance();
-        return satisfies(parser.parse(expr));
+        Predicate<Version> res;
+        try {
+            res = ExpressionParser.newInstance().parse(expr);
+        } catch (ParseException e) {
+            try {
+                res = new MavenParser().parse(expr);
+            } catch (ParseException e2) {
+                res = version -> false;
+            }
+        }
+        return satisfies(res);
     }
 
     /**
-     * Checks if this version satisfies the specified SemVer Expression.
+     * Checks if this version satisfies the specified Maven version range string.
      *
-     * This method is a part of the SemVer Expressions API.
+     * This method is a part of the Expressions API.
      *
-     * @param expr the SemVer Expression
+     * @param expr the Maven version range string
      * @return {@code true} if this version satisfies the specified
-     *         SemVer Expression or {@code false} otherwise
-     * @since 0.9.0
+     *         range or {@code false} otherwise
+     * @throws ParseException in case of a general parse error
+     * @throws LexerException when encounters an illegal character
+     * @throws UnexpectedTokenException when comes across an unexpected token
+     * @since 0.10.0
      */
-    public boolean satisfies(Expression expr) {
-        return expr.interpret(this);
+    public boolean satisfiesJSemVerExpression(String expr) {
+        return satisfies(ExpressionParser.newInstance().parse(expr));
+    }
+
+    /**
+     * Checks if this version satisfies the specified SemVer Expression string.
+     *
+     * This method is a part of the Expressions API.
+     *
+     * @param expr the JSemVer Expression string
+     * @return {@code true} if this version satisfies the specified
+     *         JSemVer Expression or {@code false} otherwise
+     * @throws ParseException in case of a general parse error
+     * @throws LexerException when encounters an illegal character
+     * @throws UnexpectedTokenException when comes across an unexpected token
+     * @since 0.10.0
+     */
+    public boolean satisfiesMavenRange(String expr) {
+        return satisfies(new MavenParser().parse(expr));
+    }
+
+
+    /**
+     * Checks if this version satisfies the specified Expression.
+     *
+     * This method is a part of the Expressions API.
+     *
+     * @param expr the Expression
+     * @return {@code true} if this version satisfies the specified
+     *         Expression or {@code false} otherwise
+     * @since 0.10.0
+     */
+    public boolean satisfies(Predicate<Version> expr) {
+        return expr.test(this);
     }
 
     //TODO: write Tests

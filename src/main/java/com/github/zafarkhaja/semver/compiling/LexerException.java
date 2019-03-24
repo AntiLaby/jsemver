@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.github.zafarkhaja.semver.expr;
+package com.github.zafarkhaja.semver.compiling;
 
 import com.github.zafarkhaja.semver.ParseException;
 
@@ -45,7 +45,7 @@ public class LexerException extends ParseException {
      *
      * @param expr the string starting from an illegal character
      */
-    LexerException(String expr) {
+    public LexerException(String expr) {
         this.expr = expr;
     }
 

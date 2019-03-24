@@ -27,6 +27,8 @@ import com.github.zafarkhaja.semver.ParseException;
 import com.github.zafarkhaja.semver.UnexpectedCharacterException;
 import com.github.zafarkhaja.semver.Version;
 
+import java.util.function.Predicate;
+
 /**
  * This class implements internal DSL for the
  * SemVer Expressions using fluent interface.
@@ -48,8 +50,8 @@ public class CompositeExpression implements Expression {
          * @param expr an {@code Expression} to negate
          * @return a newly created {@code CompositeExpression}
          */
-        public static CompositeExpression not(Expression expr) {
-            return new CompositeExpression(new Not(expr));
+        public static CompositeExpression not(Predicate<Version> expr) {
+            return new CompositeExpression(expr.negate());
         }
 
         /**
@@ -206,7 +208,7 @@ public class CompositeExpression implements Expression {
     /**
      * The underlying expression tree.
      */
-    private Expression exprTree;
+    private Predicate<Version> exprTree;
 
     /**
      * Constructs a {@code CompositeExpression}
@@ -214,53 +216,37 @@ public class CompositeExpression implements Expression {
      *
      * @param expr the underlying expression
      */
-    public CompositeExpression(Expression expr) {
+    public CompositeExpression(Predicate<Version> expr) {
         exprTree = expr;
     }
-
-    /**
-     * Adds another {@code Expression} to {@code CompositeExpression}
-     * using {@code And} logical expression.
-     *
-     * @param expr an expression to add
-     * @return this {@code CompositeExpression}
-     */
-    public CompositeExpression and(Expression expr) {
-        exprTree = new And(exprTree, expr);
-        return this;
-    }
-
-
-    /**
-     * Adds another {@code Expression} to {@code CompositeExpression}
-     * using {@code Or} logical expression.
-     *
-     * @param expr an expression to add
-     * @return this {@code CompositeExpression}
-     */
-    public CompositeExpression or(Expression expr) {
-        exprTree = new Or(exprTree, expr);
-        return this;
-    }
-
     /**
      * Interprets the expression.
      *
-     * @param version a {@code Version} string to interpret against
+     * @param version a {@code Version} string to test against
      * @return the result of the expression interpretation
      * @throws IllegalArgumentException if the input string is {@code NULL} or empty
      * @throws ParseException when invalid version string is provided
      * @throws UnexpectedCharacterException is a special case of {@code ParseException}
      */
     public boolean interpret(String version) {
-        return interpret(Version.valueOf(version));
+        return test(Version.valueOf(version));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean interpret(Version version) {
-        return exprTree.interpret(version);
+    public boolean test(Version version) {
+        return exprTree.test(version);
+    }
+
+    @Override
+    public CompositeExpression and(Predicate<? super Version> other) {
+        return new CompositeExpression(exprTree.and(other));
+    }
+
+    @Override
+    public CompositeExpression or(Predicate<? super Version> other) {
+        return new CompositeExpression(exprTree.or(other));
     }
 }

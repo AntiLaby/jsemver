@@ -21,15 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.github.zafarkhaja.semver.expr;
+package com.github.zafarkhaja.semver.compiling;
 
 import com.github.zafarkhaja.semver.ParseException;
-import com.github.zafarkhaja.semver.expr.Lexer.Token;
 import com.github.zafarkhaja.semver.util.UnexpectedElementException;
+
 import java.util.Arrays;
 
 /**
- * Thrown when a token of unexpected types is encountered during the parsing.
+ * Thrown when a token of unexpectedToken types is encountered during the parsing.
  *
  * @author Zafar Khaja &lt;zafarkhaja@gmail.com&gt;
  * @since 0.7.0
@@ -37,14 +37,14 @@ import java.util.Arrays;
 public class UnexpectedTokenException extends ParseException {
 
     /**
-     * The unexpected token.
+     * The unexpectedToken token.
      */
-    private final Token unexpected;
+    public final Token<?> unexpectedToken;
 
     /**
      * The array of the expected token types.
      */
-    private final Token.Type[] expected;
+    private final Token.Type<?>[] expected;
 
     /**
      * Constructs a {@code UnexpectedTokenException} instance with
@@ -52,30 +52,21 @@ public class UnexpectedTokenException extends ParseException {
      *
      * @param cause the wrapped exception
      */
-    UnexpectedTokenException(UnexpectedElementException cause) {
-        unexpected = (Token) cause.getUnexpectedElement();
-        expected   = (Token.Type[]) cause.getExpectedElementTypes();
+    public UnexpectedTokenException(UnexpectedElementException cause) {
+        unexpectedToken = (Token<?>) cause.getUnexpectedElement();
+        expected   = (Token.Type<?>[]) cause.getExpectedElementTypes();
     }
 
     /**
      * Constructs a {@code UnexpectedTokenException} instance
-     * with the unexpected token and the expected types.
+     * with the unexpectedToken token and the expected types.
      *
-     * @param token the unexpected token
+     * @param token the unexpectedToken token
      * @param expected an array of the expected token types
      */
-    UnexpectedTokenException(Token token, Token.Type... expected) {
-        unexpected = token;
+    public UnexpectedTokenException(Token<? extends Token> token, Token.Type... expected) {
+        unexpectedToken = token;
         this.expected = expected;
-    }
-
-    /**
-     * Gets the unexpected token.
-     *
-     * @return the unexpected token
-     */
-    Token getUnexpectedToken() {
-        return unexpected;
     }
 
     /**
@@ -83,13 +74,13 @@ public class UnexpectedTokenException extends ParseException {
      *
      * @return an array of expected token types
      */
-    Token.Type[] getExpectedTokenTypes() {
+    public Token.Type<?>[] getExpectedTokenTypes() {
         return expected;
     }
 
     /**
      * Returns the string representation of this exception
-     * containing the information about the unexpected
+     * containing the information about the unexpectedToken
      * token and, if available, about the expected types.
      *
      * @return the string representation of this exception
@@ -98,7 +89,7 @@ public class UnexpectedTokenException extends ParseException {
     public String toString() {
         String message = String.format(
             "Unexpected token '%s'",
-            unexpected
+                unexpectedToken
         );
         if (expected.length > 0) {
             message += String.format(

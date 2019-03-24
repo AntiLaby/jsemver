@@ -23,11 +23,12 @@
  */
 package com.github.zafarkhaja.semver.util;
 
+import com.github.zafarkhaja.semver.util.Stream;
 import com.github.zafarkhaja.semver.util.Stream.ElementType;
 import java.util.Arrays;
 
 /**
- * Thrown when attempting to consume a stream element of unexpected types.
+ * Thrown when attempting to consume a stream element of unexpectedToken types.
  *
  * @author Zafar Khaja &lt;zafarkhaja@gmail.com&gt;
  * @see Stream#consume(Stream.ElementType...)
@@ -36,12 +37,12 @@ import java.util.Arrays;
 public class UnexpectedElementException extends RuntimeException {
 
     /**
-     * The unexpected element in the stream.
+     * The unexpectedToken element in the stream.
      */
     private final Object unexpected;
 
     /**
-     * The position of the unexpected element in the stream.
+     * The position of the unexpectedToken element in the stream.
      */
     private final int position;
 
@@ -52,35 +53,31 @@ public class UnexpectedElementException extends RuntimeException {
 
     /**
      * Constructs a {@code UnexpectedElementException} instance
-     * with the unexpected element and the expected types.
+     * with the unexpectedToken element and the expected types.
      *
-     * @param element the unexpected element in the stream
-     * @param position the position of the unexpected element
+     * @param element the unexpectedToken element in the stream
+     * @param position the position of the unexpectedToken element
      * @param expected an array of the expected element types
      */
-    UnexpectedElementException(
-        Object element,
-        int position,
-        ElementType<?>... expected
-    ) {
+    UnexpectedElementException(Object element, int position, ElementType<?>... expected) {
         unexpected    = element;
         this.position = position;
         this.expected = expected;
     }
 
     /**
-     * Gets the unexpected element.
+     * Gets the unexpectedToken element.
      *
-     * @return the unexpected element
+     * @return the unexpectedToken element
      */
     public Object getUnexpectedElement() {
         return unexpected;
     }
 
     /**
-     * Gets the position of the unexpected element.
+     * Gets the position of the unexpectedToken element.
      *
-     * @return the position of the unexpected element
+     * @return the position of the unexpectedToken element
      */
     public int getPosition() {
         return position;
@@ -97,7 +94,7 @@ public class UnexpectedElementException extends RuntimeException {
 
     /**
      * Returns the string representation of this exception
-     * containing the information about the unexpected
+     * containing the information about the unexpectedToken
      * element and, if available, about the expected types.
      *
      * @return the string representation of this exception

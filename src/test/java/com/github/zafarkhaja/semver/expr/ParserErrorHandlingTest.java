@@ -23,7 +23,8 @@
  */
 package com.github.zafarkhaja.semver.expr;
 
-import com.github.zafarkhaja.semver.expr.Lexer.Token;
+import com.github.zafarkhaja.semver.compiling.UnexpectedTokenException;
+import com.github.zafarkhaja.semver.expr.ExprLexer.ExprToken;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -31,7 +32,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
-import static com.github.zafarkhaja.semver.expr.Lexer.Token.Type.*;
+import static com.github.zafarkhaja.semver.expr.ExprLexer.ExprToken.Type.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
@@ -43,11 +44,11 @@ public class ParserErrorHandlingTest {
 
     @ParameterizedTest
     @MethodSource("parameters")
-    public void shouldCorrectlyHandleParseErrors(String invalidExpr, Token unexpected, Token.Type[] expected) {
+    public void shouldCorrectlyHandleParseErrors(String invalidExpr, ExprToken unexpected, ExprToken.Type[] expected) {
         try {
             ExpressionParser.newInstance().parse(invalidExpr);
         } catch (UnexpectedTokenException e) {
-            assertEquals(unexpected, e.getUnexpectedToken());
+            assertEquals(unexpected, e.unexpectedToken);
             assertArrayEquals(expected, e.getExpectedTokenTypes());
             return;
         }
@@ -55,12 +56,12 @@ public class ParserErrorHandlingTest {
     }
     public static Stream<Arguments> parameters() {
         return Stream.of(
-            arguments( "1)",           new Token(RIGHT_PAREN, ")", 1),  new Token.Type[] { EOI } ),
-            arguments( "(>1.0.1",      new Token(EOI, null, 7),         new Token.Type[] { RIGHT_PAREN } ),
-            arguments( "((>=1 & <2)",  new Token(EOI, null, 11),        new Token.Type[] { RIGHT_PAREN } ),
-            arguments( ">=1.0.0 &",    new Token(EOI, null, 9),         new Token.Type[] { NUMERIC } ),
-            arguments( "(>2.0 |)",     new Token(RIGHT_PAREN, ")", 7),  new Token.Type[] { NUMERIC } ),
-            arguments( "& 1.2",        new Token(AND, "&", 0),          new Token.Type[] { NUMERIC } )
+            arguments( "1)",           new ExprToken(RIGHT_PAREN, ")", 1),  new ExprToken.Type[] { EOI } ),
+            arguments( "(>1.0.1",      new ExprToken(EOI, null, 7),         new ExprToken.Type[] { RIGHT_PAREN } ),
+            arguments( "((>=1 & <2)",  new ExprToken(EOI, null, 11),        new ExprToken.Type[] { RIGHT_PAREN } ),
+            arguments( ">=1.0.0 &",    new ExprToken(EOI, null, 9),         new ExprToken.Type[] { NUMERIC } ),
+            arguments( "(>2.0 |)",     new ExprToken(RIGHT_PAREN, ")", 7),  new ExprToken.Type[] { NUMERIC } ),
+            arguments( "& 1.2",        new ExprToken(AND, "&", 0),          new ExprToken.Type[] { NUMERIC } )
         );
     }
 }

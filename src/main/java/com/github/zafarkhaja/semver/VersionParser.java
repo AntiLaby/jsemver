@@ -175,7 +175,7 @@ class VersionParser implements Parser<Version> {
      *        in the method, it's present to override {@code Parser.parse(String)}
      * @return a valid version object
      * @throws ParseException when there is a grammar error
-     * @throws UnexpectedCharacterException when encounters an unexpected character type
+     * @throws UnexpectedCharacterException when encounters an unexpectedToken character type
      */
     @Override
     public Version parse(String input) {
@@ -189,7 +189,7 @@ class VersionParser implements Parser<Version> {
      * @return a valid version object
      * @throws IllegalArgumentException if the input string is {@code NULL} or empty
      * @throws ParseException when there is a grammar error
-     * @throws UnexpectedCharacterException when encounters an unexpected character type
+     * @throws UnexpectedCharacterException when encounters an unexpectedToken character type
      */
     static Version parseValidSemVer(String version) {
         VersionParser parser = new VersionParser(version);
@@ -203,7 +203,7 @@ class VersionParser implements Parser<Version> {
      * @return a valid normal version object
      * @throws IllegalArgumentException if the input string is {@code NULL} or empty
      * @throws ParseException when there is a grammar error
-     * @throws UnexpectedCharacterException when encounters an unexpected character type
+     * @throws UnexpectedCharacterException when encounters an unexpectedToken character type
      */
     static NormalVersion parseVersionCore(String versionCore) {
         VersionParser parser = new VersionParser(versionCore);
@@ -217,7 +217,7 @@ class VersionParser implements Parser<Version> {
      * @return a valid pre-release version object
      * @throws IllegalArgumentException if the input string is {@code NULL} or empty
      * @throws ParseException when there is a grammar error
-     * @throws UnexpectedCharacterException when encounters an unexpected character type
+     * @throws UnexpectedCharacterException when encounters an unexpectedToken character type
      */
     static MetadataVersion parsePreRelease(String preRelease) {
         VersionParser parser = new VersionParser(preRelease);
@@ -231,7 +231,7 @@ class VersionParser implements Parser<Version> {
      * @return a valid build metadata object
      * @throws IllegalArgumentException if the input string is {@code NULL} or empty
      * @throws ParseException when there is a grammar error
-     * @throws UnexpectedCharacterException when encounters an unexpected character type
+     * @throws UnexpectedCharacterException when encounters an unexpectedToken character type
      */
     static MetadataVersion parseBuild(String build) {
         VersionParser parser = new VersionParser(build);
@@ -516,7 +516,7 @@ class VersionParser implements Parser<Version> {
      *
      * @param expected the expected types of the next character
      * @return the next character in the stream
-     * @throws UnexpectedCharacterException when encounters an unexpected character type
+     * @throws UnexpectedCharacterException when encounters an unexpectedToken character type
      */
     private Character consumeNextCharacter(CharType... expected) {
         try {

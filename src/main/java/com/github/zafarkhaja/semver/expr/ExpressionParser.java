@@ -25,14 +25,16 @@ package com.github.zafarkhaja.semver.expr;
 
 import com.github.zafarkhaja.semver.Parser;
 import com.github.zafarkhaja.semver.Version;
-import com.github.zafarkhaja.semver.expr.Lexer.Token;
+import com.github.zafarkhaja.semver.compiling.UnexpectedTokenException;
+import com.github.zafarkhaja.semver.expr.ExprLexer.ExprToken;
+import com.github.zafarkhaja.semver.compiling.LexerException;
 import com.github.zafarkhaja.semver.util.Stream;
 import com.github.zafarkhaja.semver.util.Stream.ElementType;
 import com.github.zafarkhaja.semver.util.UnexpectedElementException;
 import java.util.EnumSet;
 import java.util.Iterator;
 import static com.github.zafarkhaja.semver.expr.CompositeExpression.Helper.*;
-import static com.github.zafarkhaja.semver.expr.Lexer.Token.Type.*;
+import static com.github.zafarkhaja.semver.expr.ExprLexer.ExprToken.Type.*;
 
 /**
  * A parser for the SemVer Expressions.
@@ -45,12 +47,12 @@ public class ExpressionParser implements Parser<Expression> {
     /**
      * The lexer instance used for tokenization of the input string.
      */
-    private final Lexer lexer;
+    private final ExprLexer lexer;
 
     /**
      * The stream of tokens produced by the lexer.
      */
-    private Stream<Token> tokens;
+    private Stream<ExprToken> tokens;
 
     /**
      * Constructs a {@code ExpressionParser} instance
@@ -58,7 +60,7 @@ public class ExpressionParser implements Parser<Expression> {
      *
      * @param lexer the lexer to use for tokenization of the input string
      */
-    ExpressionParser(Lexer lexer) {
+    ExpressionParser(ExprLexer lexer) {
         this.lexer = lexer;
     }
 
@@ -70,7 +72,7 @@ public class ExpressionParser implements Parser<Expression> {
      * @return a new instance of the {@code ExpressionParser} class
      */
     public static Parser<Expression> newInstance() {
-        return new ExpressionParser(new Lexer());
+        return new ExpressionParser(new ExprLexer());
     }
 
     /**
@@ -79,7 +81,7 @@ public class ExpressionParser implements Parser<Expression> {
      * @param input a string representing the SemVer Expression
      * @return the AST for the SemVer Expressions
      * @throws LexerException when encounters an illegal character
-     * @throws UnexpectedTokenException when consumes a token of an unexpected type
+     * @throws UnexpectedTokenException when consumes a token of an unexpectedToken type
      */
     @Override
     public Expression parse(String input) {
@@ -186,9 +188,9 @@ public class ExpressionParser implements Parser<Expression> {
      * @return the expression AST
      */
     private CompositeExpression parseComparisonRange() {
-        Token token = tokens.lookahead();
+        ExprToken token = tokens.lookahead();
         CompositeExpression expr;
-        switch (token.type) {
+        switch ((ExprToken.Type)token.type) {
             case EQUAL:
                 tokens.consume();
                 expr = eq(parseVersion());
@@ -371,8 +373,8 @@ public class ExpressionParser implements Parser<Expression> {
         if (!tokens.positiveLookahead(NUMERIC)) {
             return false;
         }
-        EnumSet<Token.Type> expected = EnumSet.complementOf(EnumSet.of(NUMERIC, DOT));
-        return tokens.positiveLookaheadUntil(5, expected.toArray(new Token.Type[expected.size()]));
+        EnumSet<ExprToken.Type> expected = EnumSet.complementOf(EnumSet.of(NUMERIC, DOT));
+        return tokens.positiveLookaheadUntil(5, expected.toArray(new ExprToken.Type[expected.size()]));
     }
 
     /**
@@ -435,10 +437,10 @@ public class ExpressionParser implements Parser<Expression> {
      * @return {@code true} if the version terminals are followed by
      *         the specified token type or {@code false} otherwise
      */
-    private boolean isVersionFollowedBy(ElementType<Token> type) {
-        EnumSet<Token.Type> expected = EnumSet.of(NUMERIC, DOT);
-        Iterator<Token> it = tokens.iterator();
-        Token lookahead = null;
+    private boolean isVersionFollowedBy(ElementType<ExprToken> type) {
+        EnumSet<ExprToken.Type> expected = EnumSet.of(NUMERIC, DOT);
+        Iterator<ExprToken> it = tokens.iterator();
+        ExprToken lookahead = null;
         while (it.hasNext()) {
             lookahead = it.next();
             if (!expected.contains(lookahead.type)) {
@@ -498,9 +500,9 @@ public class ExpressionParser implements Parser<Expression> {
      *
      * @param expected the expected types of the next token
      * @return the next token in the stream
-     * @throws UnexpectedTokenException when encounters an unexpected token type
+     * @throws UnexpectedTokenException when encounters an unexpectedToken token type
      */
-    private Token consumeNextToken(Token.Type... expected) {
+    private ExprToken consumeNextToken(ExprToken.Type... expected) {
         try {
             return tokens.consume(expected);
         } catch (UnexpectedElementException e) {
