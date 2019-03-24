@@ -21,24 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.github.zafarkhaja.semver.compiling;
-
-import com.github.zafarkhaja.semver.util.Stream;
 
 /**
- * A general Lexer.
- *
- * @param <T> the types of tokens returned when lexing
+ * This package contains some abstractions when it comes to compiling like Tokens, Lexers and their exception.
  * @author heisluft &lt;heisluftlp@gmail.com&gt;
  * @since 0.10.0
  */
-public abstract class Lexer<T extends Token> {
-    /**
-     * Tokenizes the specified input string.
-     *
-     * @param input the input string to tokenize
-     * @return a stream of tokens
-     * @throws LexerException when encounters an illegal character
-     */
-    protected abstract Stream<T> tokenize(String input) throws LexerException;
-}
+package com.github.zafarkhaja.semver.compiling;
