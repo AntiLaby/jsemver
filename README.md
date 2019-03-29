@@ -18,6 +18,7 @@ development and its public API should not be considered stable.
 * [Usage](#usage)
   * [Creating Versions](#creating-versions)
   * [Incrementing Versions](#incrementing-versions)
+  * [Changing Version Parts](#changing-version-parts)
   * [Comparing Versions](#comparing-versions)
 * [SemVer Expressions API (Ranges)](#semver-expressions-api-ranges)
 * [Exception Handling](#exception-handling)
@@ -34,11 +35,13 @@ To install the Java SemVer library add the following dependency to your `build.g
 **Current stable version**
 ~~~ groovy
   repositories {
-    mavenCentral()
+    maven {
+        url = 'https://heisluft.tk/maven/'
+    }
   }
 
   dependencies {
-    compile group: 'com.github.zafarkhaja', name: 'java-semver', version: '0.9.0'
+    compile group: 'com.github.zafarkhaja', name: 'java-semver', version: '0.10.0'
   }
 ~~~
 
@@ -60,10 +63,15 @@ To install the Java SemVer library add the following dependency to your `pom.xml
 
 **Current stable version**
 ~~~ xml
+<repository>
+  <id>heisluft-repo</id>
+  <url>https://heisluft.tk/maven/</url>
+ </repository>
+ 
 <dependency>
   <groupId>com.github.zafarkhaja</groupId>
   <artifactId>java-semver</artifactId>
-  <version>0.9.0</version>
+  <version>0.10.0</version>
 </dependency>
 ~~~
 
@@ -212,6 +220,32 @@ Version v2 = v1.incrementPreReleaseVersion();   // "1.2.3-beta.1"
 be of good use in better understanding some of the decisions made regarding the
 incrementor methods.
 
+### Changing Version parts ###
+Because the `Version` class is immutable, the _changing methods_ return a new
+instance of `Version` rather than modifying the given one. You may choose to
+preserve metadata if you wish
+
+~~~ java
+import com.github.zafarkhaja.semver.Version;
+
+Version v1 = Version.valueOf("1.2.3-pre.2+build.33892");
+
+// Changing the major version
+Version v2 = v1.withMajor(2, false);        // "2.2.3"
+Version v2 = v1.withMajor(2, true);         // "2.2.3-pre.2+build.33892"
+
+// Changing the minor version
+Version v3 = v1.withMinor(3. false);        // "1.3.3"
+Version v3 = v1.withMinor(3, true);         // "1.3.3-pre.2+build.33892"
+
+// Changing the patch version
+Version v4 = v1.withPatch(4, false);        // "1.2.4"
+Version v4 = v1.withPatch(4, true);         // "1.2.4-pre.2+build.33892"
+
+// Original Version is still the same
+String str = v1.toString(); // "1.2.3"
+~~~
+
 ### Comparing Versions ###
 Comparing versions with Java SemVer is easy. The `Version` class implements the
 `Comparable` interface, it also overrides the `Object.equals` method and provides
@@ -302,22 +336,25 @@ other interesting capabilities of the SemVer Expressions external DSL.
 * Negation operator - `!(1.x)` which is equivalent to `<1.0.0 & >=2.0.0`
 * Parenthesized expressions - `~1.3 | (1.4.* & !=1.4.5) | ~2`
 
-### Maven version ranges
-Since 0.10.0, maven version ranges are supported.
+Comparing against builds is possible. Comparing against prerelease version parts is
+possible IF AND ONLY IF theprerelease part starts with an alphanumeric part
+(Comparing against ```1.2.2-pre2.3``` is allowed, Comparing against ```1.2.2-3.pre``` is not)
+**NOTE:** The grammar might be made more strict in the future to allow for comparison against any valid semver.
 
-| Expression:       | Range                 | Comment                                                                                                   |
-| ----------------- | --------------------- | --------------------------------------------------------------------------------------------------------- |
-| 1.0	            | x >= 1.0 *            | * The default Maven meaning for 1.0 is everything (,) but with 1.0 recommended.                           |
-|                   |                       |   Obviously this doesn't work for enforcing versions here, so it has been redefined as a minimum version. |
-| \(,1.0\]          | x <= 1.0              |                                                                                                           |
-| \(,1.0\)          | x < 1.0               |                                                                                                           |
-| \[1.0\]	        | x == 1.0              |                                                                                                           |
-| \[1.0,\)          | x >= 1.0              |                                                                                                           |
-| \(1.0,\)          | x > 1.0               |                                                                                                           |
-| \(1.0,2.0\)       | 1.0 < x < 2.0         |                                                                                                           |
-| \[1.0,2.0\]       | 1.0 <= x <= 2.0       |                                                                                                           |
-| \(,1.0\],\[1.2,\) | x <= 1.0 or x >= 1.2. | Multiple sets are comma-separated                                                                         |
-| \(,1.1\),\(1.1,\) | x != 1.1              |                                                                                                           |
+### Maven version ranges
+
+| Expression:       | Range                 | Comment                                                                         |
+| ----------------- | --------------------- | ------------------------------------------------------------------------------  |
+| 1.0	            | x >= 1.0 *            | * The default Maven meaning for 1.0 is everything (,) but with 1.0 recommended. |
+| \(,1.0\]          | x <= 1.0              |                                                                                 |
+| \(,1.0\)          | x < 1.0               |                                                                                 |
+| \[1.0\]	        | x == 1.0              |                                                                                 |
+| \[1.0,\)          | x >= 1.0              |                                                                                 |
+| \(1.0,\)          | x > 1.0               |                                                                                 |
+| \(1.0,2.0\)       | 1.0 < x < 2.0         |                                                                                 |
+| \[1.0,2.0\]       | 1.0 <= x <= 2.0       |                                                                                 |
+| \(,1.0\],\[1.2,\) | x <= 1.0 or x >= 1.2. | Multiple sets are comma-separated                                               |
+| \(,1.1\),\(1.1,\) | x != 1.1              |                                                                                 |
 
 Exception Handling
 ------------------
@@ -350,16 +387,13 @@ Library Additions by the AntiLaby team
   * [#29](https://github.com/zafarkhaja/jsemver/pull/29), [#31](https://github.com/zafarkhaja/jsemver/pull/31),
     [#39](https://github.com/zafarkhaja/jsemver/pull/39), [#48](https://github.com/zafarkhaja/jsemver/pull/48)
 * Issues addressed in 0.10.0:
-  * (#10), (#13),
-    (#20), [#21](https://github.com/zafarkhaja/jsemver/issues/21),
+  * [#10](https://github.com/zafarkhaja/jsemver/issues/10), [#21](https://github.com/zafarkhaja/jsemver/issues/21),
     [#22](https://github.com/zafarkhaja/jsemver/issues/22), [#24](https://github.com/zafarkhaja/jsemver/issues/24),
     [#26](https://github.com/zafarkhaja/jsemver/issues/26), [#27](https://github.com/zafarkhaja/jsemver/issues/27),
-    [#32](https://github.com/zafarkhaja/jsemver/issues/32), (#35),
-    [#36](https://github.com/zafarkhaja/jsemver/issues/36), [#38](https://github.com/zafarkhaja/jsemver/issues/38),
-    (#40), (#42),
+    [#32](https://github.com/zafarkhaja/jsemver/issues/32), [#36](https://github.com/zafarkhaja/jsemver/issues/36),
+    [#38](https://github.com/zafarkhaja/jsemver/issues/38), [#41](https://github.com/zafarkhaja/jsemver/issues/41),
     [#43](https://github.com/zafarkhaja/jsemver/issues/43), [#44](https://github.com/zafarkhaja/jsemver/issues/44),
     [#45](https://github.com/zafarkhaja/jsemver/issues/45), [#47](https://github.com/zafarkhaja/jsemver/issues/47)
-  Issues in parenthesis are not dealt with yet, the others were implemented
 * Issues Remaining:
-  * #9, #12, #15, #41
+  * #9, #12, #13, #15, #20, #40, #42
   
