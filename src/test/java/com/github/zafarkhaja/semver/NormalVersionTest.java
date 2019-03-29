@@ -36,6 +36,14 @@ public class NormalVersionTest {
     public static class CoreFunctionalityTest {
 
         @Test
+        public void shouldResetPartsCorrectly() {
+            NormalVersion v = new NormalVersion(1, 2, 3);
+            assertEquals(v.withMajor(4), new NormalVersion(4, 2, 3));
+            assertEquals(v.withMinor(4), new NormalVersion(1, 4, 3));
+            assertEquals(v.withPatch(4), new NormalVersion(1, 2, 4));
+        }
+
+        @Test
         public void mustConsistOfMajorMinorAndPatchVersions() {
             NormalVersion v = new NormalVersion(1, 2, 3);
             assertEquals(1, v.getMajor());

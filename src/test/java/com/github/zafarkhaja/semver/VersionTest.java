@@ -41,6 +41,17 @@ public class VersionTest {
     public static class CoreFunctionalityTest {
 
         @Test
+        public void shouldResetPartsCorrectly() {
+            Version v = Version.valueOf("1.2.3-rc.1+build.22");
+            assertEquals(v.withMajor(4, false), Version.forIntegers(4, 2, 3));
+            assertEquals(v.withMinor(4, false), Version.forIntegers(1, 4, 3));
+            assertEquals(v.withPatch(4, false), Version.forIntegers(1, 2, 4));
+            assertNotEquals(v.withMajor(4, true), Version.forIntegers(4, 2, 3));
+            assertNotEquals(v.withMinor(4, true), Version.forIntegers(1, 4, 3));
+            assertNotEquals(v.withPatch(4, true), Version.forIntegers(1, 2, 4));
+        }
+
+        @Test
         public void mayHavePreReleaseFollowingPatchAppendedWithHyphen() {
             Version v = Version.valueOf("1.2.3-alpha");
             assertEquals("alpha", v.getPreReleaseVersion());

@@ -385,20 +385,40 @@ public class Version implements Comparable<Version>, Serializable {
         return expr.test(this);
     }
 
-    //TODO: write Tests
-    //TODO: provide Javadoc
+    /**
+     * Re-sets the major version number.
+     *
+     * @param major the new major version number
+     * @param preserveMeta whether to preserve version metadata
+     * @return a new {@code Version} with the specified major version number
+     * @throws IllegalArgumentException if the number is negative
+     */
     public Version withMajor(int major, boolean preserveMeta) {
         if(preserveMeta)
             return new Version(normal.withMajor(major), preRelease, build);
         return new Version(normal.withMajor(major));
     }
-
+    /**
+     * Re-sets the minor version number.
+     *
+     * @param minor the new major version number
+     * @param preserveMeta whether to preserve version metadata
+     * @return a new {@code Version} with the specified major version number
+     * @throws IllegalArgumentException if the number is negative
+     */
     public Version withMinor(int minor, boolean preserveMeta) {
         if(preserveMeta)
             return new Version(normal.withMinor(minor), preRelease, build);
         return new Version(normal.withMinor(minor));
     }
-
+    /**
+     * Re-sets the patch version number.
+     *
+     * @param patch the new major version number
+     * @param preserveMeta whether to preserve version metadata
+     * @return a new {@code Version} with the specified major version number
+     * @throws IllegalArgumentException if the number is negative
+     */
     public Version withPatch(int patch, boolean preserveMeta) {
         if(preserveMeta)
             return new Version(normal.withPatch(patch), preRelease, build);
