@@ -32,7 +32,10 @@ import java.util.function.Predicate;
  * by the nodes of the Abstract Syntax Tree produced by
  * the {@code ExpressionParser} class.
  *
+ * @deprecated use Predicate&lt;Version&gt; instead. Will be removed in a future release
+ *
  * @author Zafar Khaja &lt;zafarkhaja@gmail.com&gt;
  * @since 0.7.0
  */
+@Deprecated
 public interface Expression extends Predicate<Version> {}

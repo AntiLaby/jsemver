@@ -25,6 +25,9 @@ package com.github.zafarkhaja.semver.expr;
 
 import com.github.zafarkhaja.semver.Version;
 import org.junit.jupiter.api.Test;
+
+import java.util.function.Predicate;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -36,35 +39,35 @@ public class ExpressionParserTest {
     @Test
     public void shouldParseEqualComparisonRange() {
         ExpressionParser parser = new ExpressionParser(new ExprLexer());
-        Expression eq = parser.parse("=1.0.0");
+        Predicate<Version> eq = parser.parse("=1.0.0");
         assertTrue(eq.test(Version.valueOf("1.0.0")));
     }
 
     @Test
     public void shouldParseEqualComparisonRangeIfOnlyFullVersionGiven() {
         ExpressionParser parser = new ExpressionParser(new ExprLexer());
-        Expression eq = parser.parse("1.0.0");
+        Predicate<Version> eq = parser.parse("1.0.0");
         assertTrue(eq.test(Version.valueOf("1.0.0")));
     }
 
     @Test
     public void shouldParseNotEqualComparisonRange() {
         ExpressionParser parser = new ExpressionParser(new ExprLexer());
-        Expression ne = parser.parse("!=1.0.0");
+        Predicate<Version> ne = parser.parse("!=1.0.0");
         assertTrue(ne.test(Version.valueOf("1.2.3")));
     }
 
     @Test
     public void shouldParseGreaterComparisonRange() {
         ExpressionParser parser = new ExpressionParser(new ExprLexer());
-        Expression gt = parser.parse(">1.0.0");
+        Predicate<Version> gt = parser.parse(">1.0.0");
         assertTrue(gt.test(Version.valueOf("1.2.3")));
     }
 
     @Test
     public void shouldParseGreaterOrEqualComparisonRange() {
         ExpressionParser parser = new ExpressionParser(new ExprLexer());
-        Expression ge = parser.parse(">=1.0.0");
+        Predicate<Version> ge = parser.parse(">=1.0.0");
         assertTrue(ge.test(Version.valueOf("1.0.0")));
         assertTrue(ge.test(Version.valueOf("1.2.3")));
     }
@@ -72,14 +75,14 @@ public class ExpressionParserTest {
     @Test
     public void shouldParseLessComparisonRange() {
         ExpressionParser parser = new ExpressionParser(new ExprLexer());
-        Expression lt = parser.parse("<1.2.3");
+        Predicate<Version> lt = parser.parse("<1.2.3");
         assertTrue(lt.test(Version.valueOf("1.0.0")));
     }
 
     @Test
     public void shouldParseLessOrEqualComparisonRange() {
         ExpressionParser parser = new ExpressionParser(new ExprLexer());
-        Expression le = parser.parse("<=1.2.3");
+        Predicate<Version> le = parser.parse("<=1.2.3");
         assertTrue(le.test(Version.valueOf("1.0.0")));
         assertTrue(le.test(Version.valueOf("1.2.3")));
     }
@@ -87,13 +90,13 @@ public class ExpressionParserTest {
     @Test
     public void shouldParseTildeRange() {
         ExpressionParser parser = new ExpressionParser(new ExprLexer());
-        Expression expr1 = parser.parse("~1");
+        Predicate<Version> expr1 = parser.parse("~1");
         assertTrue(expr1.test(Version.valueOf("1.2.3")));
         assertFalse(expr1.test(Version.valueOf("3.2.1")));
-        Expression expr2 = parser.parse("~1.2");
+        Predicate<Version> expr2 = parser.parse("~1.2");
         assertTrue(expr2.test(Version.valueOf("1.2.3")));
         assertFalse(expr2.test(Version.valueOf("2.0.0")));
-        Expression expr3 = parser.parse("~1.2.3");
+        Predicate<Version> expr3 = parser.parse("~1.2.3");
         assertTrue(expr3.test(Version.valueOf("1.2.3")));
         assertFalse(expr3.test(Version.valueOf("1.3.0")));
     }
@@ -101,13 +104,13 @@ public class ExpressionParserTest {
     @Test
     public void shouldParseCaretRange() {
         ExpressionParser parser = new ExpressionParser(new ExprLexer());
-        Expression expr1 = parser.parse("^1");
+        Predicate<Version> expr1 = parser.parse("^1");
         assertTrue(expr1.test(Version.valueOf("1.2.3")));
         assertFalse(expr1.test(Version.valueOf("3.2.1")));
-        Expression expr2 = parser.parse("^0.2");
+        Predicate<Version> expr2 = parser.parse("^0.2");
         assertTrue(expr2.test(Version.valueOf("0.2.3")));
         assertFalse(expr2.test(Version.valueOf("0.3.0")));
-        Expression expr3 = parser.parse("^0.0.3");
+        Predicate<Version> expr3 = parser.parse("^0.0.3");
         assertTrue(expr3.test(Version.valueOf("0.0.3")));
         assertFalse(expr3.test(Version.valueOf("0.0.4")));
     }
@@ -115,9 +118,9 @@ public class ExpressionParserTest {
     @Test
     public void shouldParsePartialVersionRange() {
         ExpressionParser parser = new ExpressionParser(new ExprLexer());
-        Expression expr1 = parser.parse("1");
+        Predicate<Version> expr1 = parser.parse("1");
         assertTrue(expr1.test(Version.valueOf("1.2.3")));
-        Expression expr2 = parser.parse("2.0");
+        Predicate<Version> expr2 = parser.parse("2.0");
         assertTrue(expr2.test(Version.valueOf("2.0.9")));
     }
 
@@ -126,27 +129,27 @@ public class ExpressionParserTest {
         ExpressionParser parser = new ExpressionParser(new ExprLexer());
         Version v1_2_3 = Version.forIntegers(1, 2, 3);
         Version v3_2_1 = Version.forIntegers(3, 2, 1);
-        Expression expr1 = parser.parse("1.2.*");
+        Predicate<Version> expr1 = parser.parse("1.2.*");
         assertTrue(expr1.test(v1_2_3));
         assertFalse(expr1.test(v3_2_1));
-        Expression expr2 = parser.parse("1.x");
+        Predicate<Version> expr2 = parser.parse("1.x");
         assertTrue(expr2.test(v1_2_3));
         assertFalse(expr2.test(v3_2_1));
-        Expression expr3 = parser.parse("1.x.x");
+        Predicate<Version> expr3 = parser.parse("1.x.x");
         assertTrue(expr3.test(v1_2_3));
         assertFalse(expr3.test(v3_2_1));
-        Expression expr4 = parser.parse("X");
+        Predicate<Version> expr4 = parser.parse("X");
         assertTrue(expr4.test(v1_2_3));
-        Expression expr5 = parser.parse("X.X");
+        Predicate<Version> expr5 = parser.parse("X.X");
         assertTrue(expr5.test(v1_2_3));
-        Expression expr6 = parser.parse("X.X.X");
+        Predicate<Version> expr6 = parser.parse("X.X.X");
         assertTrue(expr6.test(v1_2_3));
     }
 
     @Test
     public void shouldParseHyphenRange() {
         ExpressionParser parser = new ExpressionParser(new ExprLexer());
-        Expression range = parser.parse("1.0.0 - 2.0.0");
+        Predicate<Version> range = parser.parse("1.0.0 - 2.0.0");
         assertTrue(range.test(Version.valueOf("1.2.3")));
         assertFalse(range.test(Version.valueOf("3.2.1")));
     }
@@ -154,7 +157,7 @@ public class ExpressionParserTest {
     @Test
     public void shouldNotGetConfusedByPreReleaseHyphens() {
         ExpressionParser parser = new ExpressionParser(new ExprLexer());
-        Expression range = parser.parse("1.0.0-pre2 - 2.0.0");
+        Predicate<Version> range = parser.parse("1.0.0-pre2 - 2.0.0");
         assertTrue(range.test(Version.valueOf("1.2.3")));
         assertFalse(range.test(Version.valueOf("3.2.1")));
     }
@@ -162,7 +165,7 @@ public class ExpressionParserTest {
     @Test
     public void shouldParseMultipleRangesJoinedWithAnd() {
         ExpressionParser parser = new ExpressionParser(new ExprLexer());
-        Expression and = parser.parse(">=1.0.0 & <2.0.0");
+        Predicate<Version> and = parser.parse(">=1.0.0 & <2.0.0");
         assertTrue(and.test(Version.valueOf("1.2.3")));
         assertFalse(and.test(Version.valueOf("3.2.1")));
     }
@@ -170,7 +173,7 @@ public class ExpressionParserTest {
     @Test
     public void shouldParseMultipleRangesJoinedWithOr() {
         ExpressionParser parser = new ExpressionParser(new ExprLexer());
-        Expression or = parser.parse("1.* | =2.0.0");
+        Predicate<Version> or = parser.parse("1.* | =2.0.0");
         assertTrue(or.test(Version.valueOf("1.2.3")));
         assertFalse(or.test(Version.valueOf("2.1.0")));
     }
@@ -178,7 +181,7 @@ public class ExpressionParserTest {
     @Test
     public void shouldParseParenthesizedExpression() {
         ExpressionParser parser = new ExpressionParser(new ExprLexer());
-        Expression expr = parser.parse("(1)");
+        Predicate<Version> expr = parser.parse("(1)");
         assertTrue(expr.test(Version.valueOf("1.2.3")));
         assertFalse(expr.test(Version.valueOf("2.0.0")));
     }
@@ -186,7 +189,7 @@ public class ExpressionParserTest {
     @Test
     public void shouldParseExpressionWithMultipleParentheses() {
         ExpressionParser parser = new ExpressionParser(new ExprLexer());
-        Expression expr = parser.parse("((1))");
+        Predicate<Version> expr = parser.parse("((1))");
         assertTrue(expr.test(Version.valueOf("1.2.3")));
         assertFalse(expr.test(Version.valueOf("2.0.0")));
     }
@@ -194,13 +197,13 @@ public class ExpressionParserTest {
     @Test
     public void shouldParseNotExpression() {
         ExpressionParser parser = new ExpressionParser(new ExprLexer());
-        Expression not1 = parser.parse("!(1)");
+        Predicate<Version> not1 = parser.parse("!(1)");
         assertTrue(not1.test(Version.valueOf("2.0.0")));
         assertFalse(not1.test(Version.valueOf("1.2.3")));
-        Expression not2 = parser.parse("0.* & !(>=1 & <2)");
+        Predicate<Version> not2 = parser.parse("0.* & !(>=1 & <2)");
         assertTrue(not2.test(Version.valueOf("0.5.0")));
         assertFalse(not2.test(Version.valueOf("1.0.1")));
-        Expression not3 = parser.parse("!(>=1 & <2) & >=2");
+        Predicate<Version> not3 = parser.parse("!(>=1 & <2) & >=2");
         assertTrue(not3.test(Version.valueOf("2.0.0")));
         assertFalse(not3.test(Version.valueOf("1.2.3")));
     }
@@ -208,16 +211,16 @@ public class ExpressionParserTest {
     @Test
     public void shouldRespectPrecedenceWhenUsedWithParentheses() {
         ExpressionParser parser = new ExpressionParser(new ExprLexer());
-        Expression expr1 = parser.parse("(~1.0 & <2.0) | >2.0");
+        Predicate<Version> expr1 = parser.parse("(~1.0 & <2.0) | >2.0");
         assertTrue(expr1.test(Version.valueOf("2.5.0")));
-        Expression expr2 = parser.parse("~1.0 & (<2.0 | >2.0)");
+        Predicate<Version> expr2 = parser.parse("~1.0 & (<2.0 | >2.0)");
         assertFalse(expr2.test(Version.valueOf("2.5.0")));
     }
 
     @Test
     public void shouldParseComplexExpressions() {
         ExpressionParser parser = new ExpressionParser(new ExprLexer());
-        Expression expr = parser.parse("((>=1.0.1+33 & <2+djjj3) | (>=3.0-rc.1 & <4)) & ((1-pre2+3.2-1.5) & (~1.5))");
+        Predicate<Version> expr = parser.parse("((>=1.0.1+33 & <2+djjj3) | (>=3.0-rc.1 & <4)) & ((1-pre2+3.2-1.5) & (~1.5))");
         assertTrue(expr.test(Version.valueOf("1.5.0")));
         assertFalse(expr.test(Version.valueOf("2.5.0")));
     }
