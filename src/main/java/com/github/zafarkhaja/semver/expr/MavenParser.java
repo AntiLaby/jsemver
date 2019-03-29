@@ -51,7 +51,7 @@ public class MavenParser implements Parser<Predicate<Version>> {
             rule = rule.or(nextRule(stream));
             if (stream.consume(COMMA, EOI).type == EOI) break;
             else if (stream.lookahead().type == EOI)
-                throw new UnexpectedTokenException(stream.lookahead(), LEFT_PAREN, LEFT_SQBR);
+                throw new UnexpectedTokenException(stream.lookahead(), LEFT_PAREN, LEFT_SQBR, NUMERIC);
         }
         return rule;
     }
@@ -63,7 +63,8 @@ public class MavenParser implements Parser<Predicate<Version>> {
      * @return the next rule
      * @throws UnexpectedTokenException if an unexpected token is encountered
      */
-    private Predicate<Version> nextRule(Stream<MvnLexer.MvnToken> stream) throws UnexpectedTokenException {
+    private static Predicate<Version> nextRule(Stream<MvnLexer.MvnToken> stream) throws UnexpectedTokenException {
+        if(stream.positiveLookahead(NUMERIC)) return new GreaterOrEqual(parseVersion(stream));
         MvnLexer.MvnToken l = stream.consume(LEFT_SQBR, LEFT_PAREN);
         Version v1 = stream.positiveLookahead(NUMERIC) ? parseVersion(stream) : null;
         Predicate<Version> part1 = v1 == null ? (v) -> true : l.lexeme.equals("[") ? new GreaterOrEqual(v1) : new Greater(v1);
@@ -86,7 +87,7 @@ public class MavenParser implements Parser<Predicate<Version>> {
      * @return the parsed version
      * @throws UnexpectedTokenException if an unexpected token is encountered
      */
-    private Version parseVersion(Stream<MvnLexer.MvnToken> stream) throws UnexpectedTokenException {
+    private static Version parseVersion(Stream<MvnLexer.MvnToken> stream) throws UnexpectedTokenException {
         int major = Integer.parseInt(stream.consume(NUMERIC).lexeme);
         int minor = 0;
         if (stream.positiveLookahead(DOT)) {
