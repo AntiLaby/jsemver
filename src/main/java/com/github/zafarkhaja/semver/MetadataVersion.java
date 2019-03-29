@@ -92,7 +92,7 @@ class MetadataVersion implements Comparable<MetadataVersion>, Serializable {
         @Override
         public int compareTo(MetadataVersion other) {
             if (!equals(other)) {
-                /**
+                /*
                  * Pre-release versions have a lower precedence than
                  * the associated normal version. (SemVer p.9)
                  */
@@ -138,13 +138,7 @@ class MetadataVersion implements Comparable<MetadataVersion>, Serializable {
      */
     @Override
     public boolean equals(Object other) {
-        if (this == other) {
-            return true;
-        }
-        if (!(other instanceof MetadataVersion)) {
-            return false;
-        }
-        return compareTo((MetadataVersion) other) == 0;
+        return this == other || other instanceof MetadataVersion && compareTo((MetadataVersion) other) == 0;
     }
 
     /**
@@ -173,7 +167,7 @@ class MetadataVersion implements Comparable<MetadataVersion>, Serializable {
     @Override
     public int compareTo(MetadataVersion other) {
         if (other == MetadataVersion.NULL) {
-            /**
+            /*
              * Pre-release versions have a lower precedence than
              * the associated normal version. (SemVer p.9)
              */
@@ -181,7 +175,7 @@ class MetadataVersion implements Comparable<MetadataVersion>, Serializable {
         }
         int result = compareIdentifierArrays(other.idents);
         if (result == 0) {
-            /**
+            /*
              * A larger set of pre-release fields has a higher
              * precedence than a smaller set, if all of the
              * preceding identifiers are equal. (SemVer p.11)
