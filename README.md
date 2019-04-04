@@ -1,4 +1,4 @@
-Java SemVer v0.10.0 (SemVer 2, continued)
+Java SemVer v0.11.0-SNAPSHOT (SemVer 2, continued)
 =========================================
 
 Java SemVer is a Java implementation of the Semantic Versioning Specification
@@ -394,6 +394,7 @@ Library Additions by the AntiLaby team
     [#38](https://github.com/zafarkhaja/jsemver/issues/38), [#41](https://github.com/zafarkhaja/jsemver/issues/41),
     [#43](https://github.com/zafarkhaja/jsemver/issues/43), [#44](https://github.com/zafarkhaja/jsemver/issues/44),
     [#45](https://github.com/zafarkhaja/jsemver/issues/45), [#47](https://github.com/zafarkhaja/jsemver/issues/47)
+* Issues addressed in 0.11.0:
+  * [#9], [#15], [#20](https://github.com/zafarkhaja/jsemver/issues/20), [#40], [#42]
 * Issues Remaining:
-  * #9, #12, #13, #15, #20, #40, #42
-  
+  * #12, #13
