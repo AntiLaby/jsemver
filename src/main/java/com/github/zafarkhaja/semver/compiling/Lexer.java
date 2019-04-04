@@ -32,7 +32,7 @@ import com.github.zafarkhaja.semver.util.Stream;
  * @author heisluft &lt;heisluftlp@gmail.com&gt;
  * @since 0.10.0
  */
-public abstract class Lexer<T extends Token> {
+public abstract class Lexer<T> {
     /**
      * Tokenizes the specified input string.
      *

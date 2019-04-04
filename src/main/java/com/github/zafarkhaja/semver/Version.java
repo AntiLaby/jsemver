@@ -427,7 +427,7 @@ public class Version implements Comparable<Version>, Serializable {
 
     public static boolean isValid(String toCheck) {
       try {
-        new VersionParser(toCheck).parse(null);
+        VersionParser.parseValidSemVer(toCheck);
         return true;
       } catch(ParseException e) {
         return false;

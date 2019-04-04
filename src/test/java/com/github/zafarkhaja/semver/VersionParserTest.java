@@ -107,8 +107,7 @@ public class VersionParserTest {
 
     @Test
     public void shouldParseValidSemVer() {
-        VersionParser parser = new VersionParser("1.0.0-rc.2+build.05");
-        Version version = parser.parse(null);
+        Version version = VersionParser.parseValidSemVer("1.0.0-rc.2+build.05");
         assertEquals(
             new Version(
                 new NormalVersion(1, 0, 0),
@@ -123,7 +122,7 @@ public class VersionParserTest {
     public void shouldRaiseErrorForIllegalInputString() {
         for (String illegal : new String[] { "", null }) {
             try {
-                new VersionParser(illegal);
+                VersionParser.parseValidSemVer(illegal);
             } catch (IllegalArgumentException e) {
                 continue;
             }
