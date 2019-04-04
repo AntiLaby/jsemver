@@ -21,10 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package com.github.zafarkhaja.semver.expr;
 
 import com.github.zafarkhaja.semver.Version;
-
 import java.util.function.Predicate;
 
 /**
@@ -35,30 +35,30 @@ import java.util.function.Predicate;
  */
 class Equal implements Predicate<Version> {
 
-    /**
-     * The parsed version, the right-hand operand of the "equal" operator.
-     */
-    private final Version parsedVersion;
+  /**
+   * The parsed version, the right-hand operand of the "equal" operator.
+   */
+  private final Version parsedVersion;
 
-    /**
-     * Constructs a {@code Equal} expression with the parsed version.
-     *
-     * @param parsedVersion the parsed version
-     */
-    Equal(Version parsedVersion) {
-        this.parsedVersion = parsedVersion;
-    }
+  /**
+   * Constructs a {@code Equal} expression with the parsed version.
+   *
+   * @param parsedVersion the parsed version
+   */
+  Equal(Version parsedVersion) {
+    this.parsedVersion = parsedVersion;
+  }
 
-    /**
-     * Checks if the current version equals the parsed version.
-     *
-     * @param version the version to compare to, the left-hand
-     *                operand of the "equal" operator
-     * @return {@code true} if the version equals the
-     *         parsed version or {@code false} otherwise
-     */
-    @Override
-    public boolean test(Version version) {
-        return version.equals(parsedVersion);
-    }
+  /**
+   * Checks if the current version equals the parsed version.
+   *
+   * @param version the version to compare to, the left-hand
+   *                operand of the "equal" operator
+   * @return {@code true} if the version equals the
+   *     parsed version or {@code false} otherwise
+   */
+  @Override
+  public boolean test(Version version) {
+    return version.equals(parsedVersion);
+  }
 }

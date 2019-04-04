@@ -21,23 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package com.github.zafarkhaja.semver;
 
 /**
  * A parser interface.
  *
  * @param <T> the type of parser's output
- *
  * @author Zafar Khaja &lt;zafarkhaja@gmail.com&gt;
  * @since 0.7.0
  */
 public interface Parser<T> {
 
-    /**
-     * Parses the input string.
-     *
-     * @param input the string to parse
-     * @return the Abstract Syntax Tree
-     */
-    T parse(String input);
+  /**
+   * Parses the input string.
+   *
+   * @param input the string to parse
+   * @return the Abstract Syntax Tree
+   */
+  T parse(String input);
 }

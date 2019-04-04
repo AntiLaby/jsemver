@@ -21,10 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package com.github.zafarkhaja.semver.expr;
 
 import com.github.zafarkhaja.semver.Version;
-
 import java.util.function.Predicate;
 
 /**
@@ -35,32 +35,32 @@ import java.util.function.Predicate;
  */
 class LessOrEqual implements Predicate<Version> {
 
-    /**
-     * The parsed version, the right-hand operand
-     * of the "less than or equal to" operator.
-     */
-    private final Version parsedVersion;
+  /**
+   * The parsed version, the right-hand operand
+   * of the "less than or equal to" operator.
+   */
+  private final Version parsedVersion;
 
-    /**
-     * Constructs a {@code LessOrEqual} expression with the parsed version.
-     *
-     * @param parsedVersion the parsed version
-     */
-    LessOrEqual(Version parsedVersion) {
-        this.parsedVersion = parsedVersion;
-    }
+  /**
+   * Constructs a {@code LessOrEqual} expression with the parsed version.
+   *
+   * @param parsedVersion the parsed version
+   */
+  LessOrEqual(Version parsedVersion) {
+    this.parsedVersion = parsedVersion;
+  }
 
-    /**
-     * Checks if the current version is less
-     * than or equal to the parsed version.
-     *
-     * @param version the version to compare to, the left-hand operand
-     *                of the "less than or equal to" operator
-     * @return {@code true} if the version is less than or equal
-     *         to the parsed version or {@code false} otherwise
-     */
-    @Override
-    public boolean test(Version version) {
-        return version.compareWithBuildsTo(parsedVersion) <= 0;
-    }
+  /**
+   * Checks if the current version is less
+   * than or equal to the parsed version.
+   *
+   * @param version the version to compare to, the left-hand operand
+   *                of the "less than or equal to" operator
+   * @return {@code true} if the version is less than or equal
+   *     to the parsed version or {@code false} otherwise
+   */
+  @Override
+  public boolean test(Version version) {
+    return version.compareWithBuildsTo(parsedVersion) <= 0;
+  }
 }

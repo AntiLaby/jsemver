@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package com.github.zafarkhaja.semver;
 
 import java.io.Serializable;
@@ -29,221 +30,221 @@ import java.util.Locale;
 /**
  * The {@code NormalVersion} class represents the version core.
  *
- * This class is immutable and hence thread-safe.
+ * <p>This class is immutable and hence thread-safe.
  *
  * @author Zafar Khaja &lt;zafarkhaja@gmail.com&gt;
  * @since 0.2.0
  */
 class NormalVersion implements Comparable<NormalVersion>, Serializable {
 
-    private static final long serialVersionUID = -5646200921684070847L;
+  private static final long serialVersionUID = -5646200921684070847L;
 
-    /**
-     * The major version number.
-     */
-    private final int major;
+  /**
+   * The major version number.
+   */
+  private final int major;
 
-    /**
-     * The minor version number.
-     */
-    private final int minor;
+  /**
+   * The minor version number.
+   */
+  private final int minor;
 
-    /**
-     * The patch version number.
-     */
-    private final int patch;
+  /**
+   * The patch version number.
+   */
+  private final int patch;
 
-    /**
-     * Constructs a {@code NormalVersion} with the
-     * major, minor and patch version numbers.
-     *
-     * @param major the major version number
-     * @param minor the minor version number
-     * @param patch the patch version number
-     * @throws IllegalArgumentException if one of the version numbers is a negative integer
-     */
-    NormalVersion(int major, int minor, int patch) {
-        if (major < 0 || minor < 0 || patch < 0) {
-            throw new IllegalArgumentException(
-                "Major, minor and patch versions MUST be non-negative integers."
-            );
-        }
-        this.major = major;
-        this.minor = minor;
-        this.patch = patch;
+  /**
+   * Constructs a {@code NormalVersion} with the
+   * major, minor and patch version numbers.
+   *
+   * @param major the major version number
+   * @param minor the minor version number
+   * @param patch the patch version number
+   * @throws IllegalArgumentException if one of the version numbers is a negative integer
+   */
+  NormalVersion(int major, int minor, int patch) {
+    if (major < 0 || minor < 0 || patch < 0) {
+      throw new IllegalArgumentException(
+          "Major, minor and patch versions MUST be non-negative integers."
+      );
     }
+    this.major = major;
+    this.minor = minor;
+    this.patch = patch;
+  }
 
-    /**
-     * Constructs a {@code NormalVersion} with the
-     * major and minor version numbers.
-     *
-     * @param major the major version number
-     * @param minor the minor version number
-     * @throws IllegalArgumentException if one of the version numbers is a negative integer
-     */
-    NormalVersion(int major, int minor) {
-        if (major < 0 || minor < 0) {
-            throw new IllegalArgumentException(
-                "Major and minor versions MUST be non-negative integers."
-            );
-        }
-        this.major = major;
-        this.minor = minor;
-        this.patch = 0;
+  /**
+   * Constructs a {@code NormalVersion} with the
+   * major and minor version numbers.
+   *
+   * @param major the major version number
+   * @param minor the minor version number
+   * @throws IllegalArgumentException if one of the version numbers is a negative integer
+   */
+  NormalVersion(int major, int minor) {
+    if (major < 0 || minor < 0) {
+      throw new IllegalArgumentException(
+          "Major and minor versions MUST be non-negative integers."
+      );
     }
+    this.major = major;
+    this.minor = minor;
+    this.patch = 0;
+  }
 
-    /**
-     * Constructs a {@code NormalVersion} with the
-     * major version number.
-     *
-     * @param major the major version number
-     * @throws IllegalArgumentException if the version number is a negative integer
-     */
-    NormalVersion(int major) {
-        if (major < 0) {
-            throw new IllegalArgumentException(
-                "Major version MUST be a non-negative integer."
-            );
-        }
-        this.major = major;
-        this.minor = 0;
-        this.patch = 0;
+  /**
+   * Constructs a {@code NormalVersion} with the
+   * major version number.
+   *
+   * @param major the major version number
+   * @throws IllegalArgumentException if the version number is a negative integer
+   */
+  NormalVersion(int major) {
+    if (major < 0) {
+      throw new IllegalArgumentException(
+          "Major version MUST be a non-negative integer."
+      );
     }
+    this.major = major;
+    this.minor = 0;
+    this.patch = 0;
+  }
 
-    /**
-     * Re-sets the patch version number.
-     *
-     * @param patch the new patch version number
-     * @return a new {@code NormalVersion} with the specified patch version number
-     * @throws IllegalArgumentException if the number is negative
-     */
-    NormalVersion withPatch(int patch) {
-        return new NormalVersion(major, minor, patch);
-    }
+  /**
+   * Re-sets the patch version number.
+   *
+   * @param patch the new patch version number
+   * @return a new {@code NormalVersion} with the specified patch version number
+   * @throws IllegalArgumentException if the number is negative
+   */
+  NormalVersion withPatch(int patch) {
+    return new NormalVersion(major, minor, patch);
+  }
 
-    /**
-     * Re-sets the minor version number.
-     *
-     * @param minor the new minor version number
-     * @return a new {@code NormalVersion} with the specified minor version number
-     * @throws IllegalArgumentException if the number is negative
-     */
-    NormalVersion withMinor(int minor) {
-        return new NormalVersion(major, minor, patch);
-    }
+  /**
+   * Re-sets the minor version number.
+   *
+   * @param minor the new minor version number
+   * @return a new {@code NormalVersion} with the specified minor version number
+   * @throws IllegalArgumentException if the number is negative
+   */
+  NormalVersion withMinor(int minor) {
+    return new NormalVersion(major, minor, patch);
+  }
 
-    /**
-     * Re-sets the major version number.
-     *
-     * @param major the new major version number
-     * @return a new {@code NormalVersion} with the specified major version number
-     * @throws IllegalArgumentException if the number is negative
-     */
-    NormalVersion withMajor(int major) {
-        return new NormalVersion(major, minor, patch);
-    }
+  /**
+   * Re-sets the major version number.
+   *
+   * @param major the new major version number
+   * @return a new {@code NormalVersion} with the specified major version number
+   * @throws IllegalArgumentException if the number is negative
+   */
+  NormalVersion withMajor(int major) {
+    return new NormalVersion(major, minor, patch);
+  }
 
-    /**
-     * Returns the major version number.
-     *
-     * @return the major version number
-     */
-    int getMajor() {
-        return major;
-    }
+  /**
+   * Returns the major version number.
+   *
+   * @return the major version number
+   */
+  int getMajor() {
+    return major;
+  }
 
-    /**
-     * Returns the minor version number.
-     *
-     * @return the minor version number
-     */
-    int getMinor() {
-        return minor;
-    }
+  /**
+   * Returns the minor version number.
+   *
+   * @return the minor version number
+   */
+  int getMinor() {
+    return minor;
+  }
 
-    /**
-     * Returns the patch version number.
-     *
-     * @return the patch version number
-     */
-    int getPatch() {
-        return patch;
-    }
+  /**
+   * Returns the patch version number.
+   *
+   * @return the patch version number
+   */
+  int getPatch() {
+    return patch;
+  }
 
-    /**
-     * Increments the major version number.
-     *
-     * @return a new instance of the {@code NormalVersion} class
-     */
-    NormalVersion incrementMajor() {
-        return new NormalVersion(major + 1, 0, 0);
-    }
+  /**
+   * Increments the major version number.
+   *
+   * @return a new instance of the {@code NormalVersion} class
+   */
+  NormalVersion incrementMajor() {
+    return new NormalVersion(major + 1, 0, 0);
+  }
 
-    /**
-     * Increments the minor version number.
-     *
-     * @return a new instance of the {@code NormalVersion} class
-     */
-    NormalVersion incrementMinor() {
-        return new NormalVersion(major, minor + 1, 0);
-    }
+  /**
+   * Increments the minor version number.
+   *
+   * @return a new instance of the {@code NormalVersion} class
+   */
+  NormalVersion incrementMinor() {
+    return new NormalVersion(major, minor + 1, 0);
+  }
 
-    /**
-     * Increments the patch version number.
-     *
-     * @return a new instance of the {@code NormalVersion} class
-     */
-    NormalVersion incrementPatch() {
-        return new NormalVersion(major, minor, patch + 1);
-    }
+  /**
+   * Increments the patch version number.
+   *
+   * @return a new instance of the {@code NormalVersion} class
+   */
+  NormalVersion incrementPatch() {
+    return new NormalVersion(major, minor, patch + 1);
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int compareTo(NormalVersion other) {
-        int result = major - other.major;
-        if (result == 0) {
-            result = minor - other.minor;
-            if (result == 0) {
-                result = patch - other.patch;
-            }
-        }
-        return result;
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int compareTo(NormalVersion other) {
+    int result = major - other.major;
+    if (result == 0) {
+      result = minor - other.minor;
+      if (result == 0) {
+        result = patch - other.patch;
+      }
     }
+    return result;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean equals(Object other) {
-        return this == other ||
-            other instanceof NormalVersion && compareTo((NormalVersion) other) == 0;
-    }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean equals(Object other) {
+    return this == other
+        || other instanceof NormalVersion && compareTo((NormalVersion) other) == 0;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int hashCode() {
-        int hash = 17;
-        hash = 31 * hash + major;
-        hash = 31 * hash + minor;
-        hash = 31 * hash + patch;
-        return hash;
-    }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int hashCode() {
+    int hash = 17;
+    hash = 31 * hash + major;
+    hash = 31 * hash + minor;
+    hash = 31 * hash + patch;
+    return hash;
+  }
 
-    /**
-     * Returns the string representation of this normal version.
-     *
-     * A normal version number MUST take the form X.Y.Z where X, Y, and Z are
-     * non-negative integers. X is the major version, Y is the minor version,
-     * and Z is the patch version. (SemVer p.2)
-     *
-     * @return the string representation of this normal version
-     */
-    @Override
-    public String toString() {
-        return String.format(Locale.US, "%d.%d.%d", major, minor, patch);
-    }
+  /**
+   * Returns the string representation of this normal version.
+   *
+   * <p>A normal version number MUST take the form X.Y.Z where X, Y, and Z are
+   * non-negative integers. X is the major version, Y is the minor version,
+   * and Z is the patch version. (SemVer p.2)
+   *
+   * @return the string representation of this normal version
+   */
+  @Override
+  public String toString() {
+    return String.format(Locale.US, "%d.%d.%d", major, minor, patch);
+  }
 }

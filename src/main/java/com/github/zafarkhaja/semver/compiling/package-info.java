@@ -23,8 +23,11 @@
  */
 
 /**
- * This package contains some abstractions when it comes to compiling like Tokens, Lexers and their exception.
+ * This package contains some abstractions when it comes to compiling,
+ * like Tokens, Lexers and their exceptions.
+ *
  * @author heisluft &lt;heisluftlp@gmail.com&gt;
  * @since 0.10.0
  */
+
 package com.github.zafarkhaja.semver.compiling;

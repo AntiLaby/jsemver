@@ -21,11 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package com.github.zafarkhaja.semver.compiling;
 
 import com.github.zafarkhaja.semver.ParseException;
 import com.github.zafarkhaja.semver.util.UnexpectedElementException;
-
 import java.util.Arrays;
 
 /**
@@ -36,67 +36,67 @@ import java.util.Arrays;
  */
 public class UnexpectedTokenException extends ParseException {
 
-    /**
-     * The unexpectedToken token.
-     */
-    public final Token<?> unexpectedToken;
+  /**
+   * The unexpectedToken token.
+   */
+  public final Token<?> unexpectedToken;
 
-    /**
-     * The array of the expected token types.
-     */
-    private final Token.Type<?>[] expected;
+  /**
+   * The array of the expected token types.
+   */
+  private final Token.Type<?>[] expected;
 
-    /**
-     * Constructs a {@code UnexpectedTokenException} instance with
-     * the wrapped {@code UnexpectedElementException} exception.
-     *
-     * @param cause the wrapped exception
-     */
-    public UnexpectedTokenException(UnexpectedElementException cause) {
-        unexpectedToken = (Token<?>) cause.getUnexpectedElement();
-        expected   = (Token.Type<?>[]) cause.getExpectedElementTypes();
+  /**
+   * Constructs a {@code UnexpectedTokenException} instance with
+   * the wrapped {@code UnexpectedElementException} exception.
+   *
+   * @param cause the wrapped exception
+   */
+  public UnexpectedTokenException(UnexpectedElementException cause) {
+    unexpectedToken = (Token<?>) cause.getUnexpectedElement();
+    expected = (Token.Type<?>[]) cause.getExpectedElementTypes();
+  }
+
+  /**
+   * Constructs a {@code UnexpectedTokenException} instance
+   * with the unexpectedToken token and the expected types.
+   *
+   * @param token    the unexpectedToken token
+   * @param expected an array of the expected token types
+   */
+  public UnexpectedTokenException(Token<? extends Token> token, Token.Type... expected) {
+    unexpectedToken = token;
+    this.expected = expected;
+  }
+
+  /**
+   * Gets the expected token types.
+   *
+   * @return an array of expected token types
+   */
+  public Token.Type<?>[] getExpectedTokenTypes() {
+    return expected;
+  }
+
+  /**
+   * Returns the string representation of this exception
+   * containing the information about the unexpectedToken
+   * token and, if available, about the expected types.
+   *
+   * @return the string representation of this exception
+   */
+  @Override
+  public String toString() {
+    String message = String.format(
+        "Unexpected token '%s'",
+        unexpectedToken
+    );
+    if (expected.length > 0) {
+      message += String.format(
+          ", expecting '%s'",
+          Arrays.toString(expected)
+      );
     }
-
-    /**
-     * Constructs a {@code UnexpectedTokenException} instance
-     * with the unexpectedToken token and the expected types.
-     *
-     * @param token the unexpectedToken token
-     * @param expected an array of the expected token types
-     */
-    public UnexpectedTokenException(Token<? extends Token> token, Token.Type... expected) {
-        unexpectedToken = token;
-        this.expected = expected;
-    }
-
-    /**
-     * Gets the expected token types.
-     *
-     * @return an array of expected token types
-     */
-    public Token.Type<?>[] getExpectedTokenTypes() {
-        return expected;
-    }
-
-    /**
-     * Returns the string representation of this exception
-     * containing the information about the unexpectedToken
-     * token and, if available, about the expected types.
-     *
-     * @return the string representation of this exception
-     */
-    @Override
-    public String toString() {
-        String message = String.format(
-            "Unexpected token '%s'",
-                unexpectedToken
-        );
-        if (expected.length > 0) {
-            message += String.format(
-                ", expecting '%s'",
-                Arrays.toString(expected)
-            );
-        }
-        return message;
-    }
+    return message;
+  }
 }

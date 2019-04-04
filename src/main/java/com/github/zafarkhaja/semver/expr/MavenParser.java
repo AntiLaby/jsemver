@@ -21,16 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package com.github.zafarkhaja.semver.expr;
+
+import static com.github.zafarkhaja.semver.expr.MvnLexer.MvnToken.Type.ALPHA_NUMERIC;
+import static com.github.zafarkhaja.semver.expr.MvnLexer.MvnToken.Type.COMMA;
+import static com.github.zafarkhaja.semver.expr.MvnLexer.MvnToken.Type.DOT;
+import static com.github.zafarkhaja.semver.expr.MvnLexer.MvnToken.Type.EOI;
+import static com.github.zafarkhaja.semver.expr.MvnLexer.MvnToken.Type.HYPHEN;
+import static com.github.zafarkhaja.semver.expr.MvnLexer.MvnToken.Type.LEFT_PAREN;
+import static com.github.zafarkhaja.semver.expr.MvnLexer.MvnToken.Type.LEFT_SQBR;
+import static com.github.zafarkhaja.semver.expr.MvnLexer.MvnToken.Type.NUMERIC;
+import static com.github.zafarkhaja.semver.expr.MvnLexer.MvnToken.Type.PLUS;
+import static com.github.zafarkhaja.semver.expr.MvnLexer.MvnToken.Type.RIGHT_PAREN;
+import static com.github.zafarkhaja.semver.expr.MvnLexer.MvnToken.Type.RIGHT_SQBR;
 
 import com.github.zafarkhaja.semver.Parser;
 import com.github.zafarkhaja.semver.Version;
 import com.github.zafarkhaja.semver.compiling.UnexpectedTokenException;
 import com.github.zafarkhaja.semver.util.Stream;
-
 import java.util.function.Predicate;
-
-import static com.github.zafarkhaja.semver.expr.MvnLexer.MvnToken.Type.*;
 
 /**
  * A Parser for Maven Version range strings. NOT Thread-safe.
@@ -40,81 +50,94 @@ import static com.github.zafarkhaja.semver.expr.MvnLexer.MvnToken.Type.*;
  */
 public class MavenParser implements Parser<Predicate<Version>> {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Predicate<Version> parse(String input) {
-        Stream<MvnLexer.MvnToken> stream = new MvnLexer().tokenize(input);
-        Predicate<Version> rule = version -> false;
-        while (!stream.positiveLookahead(EOI)) {
-            rule = rule.or(nextRule(stream));
-            if (stream.consume(COMMA, EOI).type == EOI) break;
-            else if (stream.lookahead().type == EOI)
-                throw new UnexpectedTokenException(stream.lookahead(), LEFT_PAREN, LEFT_SQBR, NUMERIC);
-        }
-        return rule;
+  /**
+   * Parses the next rule non-terminal.
+   *
+   * @param stream the stream to operate on
+   * @return the next rule
+   * @throws UnexpectedTokenException if an unexpected token is encountered
+   */
+  private static Predicate<Version> nextRule(Stream<MvnLexer.MvnToken> stream)
+      throws UnexpectedTokenException {
+    if (stream.positiveLookahead(NUMERIC)) {
+      return new GreaterOrEqual(parseVersion(stream));
     }
+    MvnLexer.MvnToken l = stream.consume(LEFT_SQBR, LEFT_PAREN);
+    Version v1 = stream.positiveLookahead(NUMERIC) ? parseVersion(stream) : null;
+    Predicate<Version> part1 = v1 == null
+        ? (v) -> true : l.lexeme.equals("[") ? new GreaterOrEqual(v1) : new Greater(v1);
+    //[1.1] evaluates to EQUALS 1.1 w/o buildnums
+    if (l.type == LEFT_SQBR && v1 != null && stream.positiveLookahead(RIGHT_SQBR)) {
+      stream.consume();
+      return version -> v1.compareTo(version) == 0;
+    }
+    stream.consume(COMMA);
+    Version v2 = stream.positiveLookahead(NUMERIC) ? parseVersion(stream) : null;
+    MvnLexer.MvnToken r = stream.consume(RIGHT_SQBR, RIGHT_PAREN);
+    Predicate<Version> part2 = v2 == null
+        ? (v) -> true : r.lexeme.equals("]") ? new LessOrEqual(v2) : new Less(v2);
+    return part1.and(part2);
+  }
 
-    /**
-     * Parses the next rule non-terminal.
-     *
-     * @param stream the stream to operate on
-     * @return the next rule
-     * @throws UnexpectedTokenException if an unexpected token is encountered
-     */
-    private static Predicate<Version> nextRule(Stream<MvnLexer.MvnToken> stream) throws UnexpectedTokenException {
-        if(stream.positiveLookahead(NUMERIC)) return new GreaterOrEqual(parseVersion(stream));
-        MvnLexer.MvnToken l = stream.consume(LEFT_SQBR, LEFT_PAREN);
-        Version v1 = stream.positiveLookahead(NUMERIC) ? parseVersion(stream) : null;
-        Predicate<Version> part1 = v1 == null ? (v) -> true : l.lexeme.equals("[") ? new GreaterOrEqual(v1) : new Greater(v1);
-        //[1.1] evaluates to EQUALS 1.1 w/o buildnums
-        if (l.type == LEFT_SQBR && v1 != null && stream.positiveLookahead(RIGHT_SQBR)) {
-            stream.consume();
-            return version -> v1.compareTo(version) == 0;
-        }
-        stream.consume(COMMA);
-        Version v2 = stream.positiveLookahead(NUMERIC) ? parseVersion(stream) : null;
-        MvnLexer.MvnToken r = stream.consume(RIGHT_SQBR, RIGHT_PAREN);
-        Predicate<Version> part2 = v2 == null ? (v) -> true : r.lexeme.equals("]") ? new LessOrEqual(v2) : new Less(v2);
-        return part1.and(part2);
+  /**
+   * Parses the {@literal <version>} non-terminal.
+   *
+   * @param stream the stream to operate on
+   * @return the parsed version
+   * @throws UnexpectedTokenException if an unexpected token is encountered
+   */
+  private static Version parseVersion(Stream<MvnLexer.MvnToken> stream)
+      throws UnexpectedTokenException {
+    final int major = Integer.parseInt(stream.consume(NUMERIC).lexeme);
+    int minor = 0;
+    if (stream.positiveLookahead(DOT)) {
+      stream.consume();
+      minor = Integer.parseInt(stream.consume(NUMERIC).lexeme);
     }
+    int patch = 0;
+    if (stream.positiveLookahead(DOT)) {
+      stream.consume();
+      patch = Integer.parseInt(stream.consume(NUMERIC).lexeme);
+    }
+    StringBuilder pre = new StringBuilder();
+    if (stream.positiveLookahead(HYPHEN)) {
+      stream.consume();
+      while (stream.positiveLookahead(ALPHA_NUMERIC, NUMERIC, DOT)) {
+        pre.append(stream.consume(ALPHA_NUMERIC, NUMERIC, DOT).lexeme);
+      }
+    }
+    StringBuilder build = new StringBuilder();
+    if (stream.positiveLookahead(PLUS)) {
+      stream.consume();
+      while (stream.positiveLookahead(ALPHA_NUMERIC, NUMERIC, DOT)) {
+        build.append(stream.consume(ALPHA_NUMERIC, NUMERIC, DOT).lexeme);
+      }
+    }
+    Version vtemp = Version.forIntegers(major, minor, patch);
+    if (pre.length() != 0) {
+      vtemp = vtemp.setPreReleaseVersion(pre.toString());
+    }
+    if (build.length() != 0) {
+      vtemp = vtemp.setBuildMetadata(build.toString());
+    }
+    return vtemp;
+  }
 
-    /**
-     * Parses the {@literal <version>} non-terminal
-     *
-     * @param stream the stream to operate on
-     * @return the parsed version
-     * @throws UnexpectedTokenException if an unexpected token is encountered
-     */
-    private static Version parseVersion(Stream<MvnLexer.MvnToken> stream) throws UnexpectedTokenException {
-        int major = Integer.parseInt(stream.consume(NUMERIC).lexeme);
-        int minor = 0;
-        if (stream.positiveLookahead(DOT)) {
-            stream.consume();
-            minor = Integer.parseInt(stream.consume(NUMERIC).lexeme);
-        }
-        int patch = 0;
-        if (stream.positiveLookahead(DOT)) {
-            stream.consume();
-            patch = Integer.parseInt(stream.consume(NUMERIC).lexeme);
-        }
-        StringBuilder pre = new StringBuilder();
-        if (stream.positiveLookahead(HYPHEN)) {
-            stream.consume();
-            while (stream.positiveLookahead(ALPHA_NUMERIC, NUMERIC, DOT)) {
-                pre.append(stream.consume(ALPHA_NUMERIC, NUMERIC, DOT).lexeme);
-            }}
-        StringBuilder build = new StringBuilder();
-        if (stream.positiveLookahead(PLUS)) {
-            stream.consume();
-            while (stream.positiveLookahead(ALPHA_NUMERIC, NUMERIC, DOT)) {
-                build.append(stream.consume(ALPHA_NUMERIC, NUMERIC, DOT).lexeme);
-            }
-        }
-        Version vtemp = Version.forIntegers(major, minor, patch);
-        if (pre.length() != 0) vtemp = vtemp.setPreReleaseVersion(pre.toString());
-        if (build.length() != 0) vtemp = vtemp.setBuildMetadata(build.toString());
-        return vtemp;
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Predicate<Version> parse(String input) {
+    Stream<MvnLexer.MvnToken> stream = new MvnLexer().tokenize(input);
+    Predicate<Version> rule = version -> false;
+    while (!stream.positiveLookahead(EOI)) {
+      rule = rule.or(nextRule(stream));
+      if (stream.consume(COMMA, EOI).type == EOI) {
+        break;
+      } else if (stream.lookahead().type == EOI) {
+        throw new UnexpectedTokenException(stream.lookahead(), LEFT_PAREN, LEFT_SQBR, NUMERIC);
+      }
     }
+    return rule;
+  }
 }

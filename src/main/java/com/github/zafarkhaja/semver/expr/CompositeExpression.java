@@ -21,12 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package com.github.zafarkhaja.semver.expr;
 
 import com.github.zafarkhaja.semver.ParseException;
 import com.github.zafarkhaja.semver.UnexpectedCharacterException;
 import com.github.zafarkhaja.semver.Version;
-
 import java.util.function.Predicate;
 
 /**
@@ -38,215 +38,216 @@ import java.util.function.Predicate;
  */
 public class CompositeExpression implements Predicate<Version> {
 
+  /**
+   * The underlying expression tree.
+   */
+  private Predicate<Version> exprTree;
+
+  /**
+   * Constructs a {@code CompositeExpression}
+   * with an underlying {@code Expression}.
+   *
+   * @param expr the underlying expression
+   */
+  public CompositeExpression(Predicate<Version> expr) {
+    exprTree = expr;
+  }
+
+  /**
+   * Interprets the expression.
+   *
+   * @param version a {@code Version} string to test against
+   * @return the result of the expression interpretation
+   * @throws IllegalArgumentException     if the input string is {@code NULL} or empty
+   * @throws ParseException               when invalid version string is provided
+   * @throws UnexpectedCharacterException is a special case of {@code ParseException}
+   */
+  public boolean interpret(String version) {
+    return test(Version.valueOf(version));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean test(Version version) {
+    return exprTree.test(version);
+  }
+
+  @Override
+  public CompositeExpression and(Predicate<? super Version> other) {
+    return new CompositeExpression(exprTree.and(other));
+  }
+
+  @Override
+  public CompositeExpression or(Predicate<? super Version> other) {
+    return new CompositeExpression(exprTree.or(other));
+  }
+
+  /**
+   * A class with static helper methods.
+   */
+  public static class Helper {
+
     /**
-     * A class with static helper methods.
+     * Creates a {@code CompositeExpression} with
+     * an underlying {@code Not} expression.
+     *
+     * @param expr an {@code Expression} to negate
+     * @return a newly created {@code CompositeExpression}
      */
-    public static class Helper {
-
-        /**
-         * Creates a {@code CompositeExpression} with
-         * an underlying {@code Not} expression.
-         *
-         * @param expr an {@code Expression} to negate
-         * @return a newly created {@code CompositeExpression}
-         */
-        public static CompositeExpression not(Predicate<Version> expr) {
-            return new CompositeExpression(expr.negate());
-        }
-
-        /**
-         * Creates a {@code CompositeExpression} with
-         * an underlying {@code Equal} expression.
-         *
-         * @param version a {@code Version} to check for equality
-         * @return a newly created {@code CompositeExpression}
-         */
-        public static CompositeExpression eq(Version version) {
-            return new CompositeExpression(new Equal(version));
-        }
-
-        /**
-         * Creates a {@code CompositeExpression} with
-         * an underlying {@code Equal} expression.
-         *
-         * @param version a {@code Version} string to check for equality
-         * @return a newly created {@code CompositeExpression}
-         * @throws IllegalArgumentException if the input string is {@code NULL} or empty
-         * @throws ParseException when invalid version string is provided
-         * @throws UnexpectedCharacterException is a special case of {@code ParseException}
-         */
-        public static CompositeExpression eq(String version) {
-            return eq(Version.valueOf(version));
-        }
-
-        /**
-         * Creates a {@code CompositeExpression} with
-         * an underlying {@code NotEqual} expression.
-         *
-         * @param version a {@code Version} to check for non-equality
-         * @return a newly created {@code CompositeExpression}
-         */
-        public static CompositeExpression neq(Version version) {
-            return new CompositeExpression(new NotEqual(version));
-        }
-
-        /**
-         * Creates a {@code CompositeExpression} with
-         * an underlying {@code NotEqual} expression.
-         *
-         * @param version a {@code Version} string to check for non-equality
-         * @return a newly created {@code CompositeExpression}
-         * @throws IllegalArgumentException if the input string is {@code NULL} or empty
-         * @throws ParseException when invalid version string is provided
-         * @throws UnexpectedCharacterException is a special case of {@code ParseException}
-         */
-        public static CompositeExpression neq(String version) {
-            return neq(Version.valueOf(version));
-        }
-
-        /**
-         * Creates a {@code CompositeExpression} with
-         * an underlying {@code Greater} expression.
-         *
-         * @param version a {@code Version} to compare with
-         * @return a newly created {@code CompositeExpression}
-         */
-        public static CompositeExpression gt(Version version) {
-            return new CompositeExpression(new Greater(version));
-        }
-
-        /**
-         * Creates a {@code CompositeExpression} with
-         * an underlying {@code Greater} expression.
-         *
-         * @param version a {@code Version} string to compare with
-         * @return a newly created {@code CompositeExpression}
-         * @throws IllegalArgumentException if the input string is {@code NULL} or empty
-         * @throws ParseException when invalid version string is provided
-         * @throws UnexpectedCharacterException is a special case of {@code ParseException}
-         */
-        public static CompositeExpression gt(String version) {
-            return gt(Version.valueOf(version));
-        }
-
-        /**
-         * Creates a {@code CompositeExpression} with an
-         * underlying {@code GreaterOrEqual} expression.
-         *
-         * @param version a {@code Version} to compare with
-         * @return a newly created {@code CompositeExpression}
-         */
-        public static CompositeExpression gte(Version version) {
-            return new CompositeExpression(new GreaterOrEqual(version));
-        }
-
-        /**
-         * Creates a {@code CompositeExpression} with an
-         * underlying {@code GreaterOrEqual} expression.
-         *
-         * @param version a {@code Version} string to compare with
-         * @return a newly created {@code CompositeExpression}
-         * @throws IllegalArgumentException if the input string is {@code NULL} or empty
-         * @throws ParseException when invalid version string is provided
-         * @throws UnexpectedCharacterException is a special case of {@code ParseException}
-         */
-        public static CompositeExpression gte(String version) {
-            return gte(Version.valueOf(version));
-        }
-
-        /**
-         * Creates a {@code CompositeExpression} with
-         * an underlying {@code Less} expression.
-         *
-         * @param version a {@code Version} to compare with
-         * @return a newly created {@code CompositeExpression}
-         */
-        public static CompositeExpression lt(Version version) {
-            return new CompositeExpression(new Less(version));
-        }
-
-        /**
-         * Creates a {@code CompositeExpression} with
-         * an underlying {@code Less} expression.
-         *
-         * @param version a {@code Version} string to compare with
-         * @return a newly created {@code CompositeExpression}
-         * @throws IllegalArgumentException if the input string is {@code NULL} or empty
-         * @throws ParseException when invalid version string is provided
-         * @throws UnexpectedCharacterException is a special case of {@code ParseException}
-         */
-        public static CompositeExpression lt(String version) {
-            return lt(Version.valueOf(version));
-        }
-
-        /**
-         * Creates a {@code CompositeExpression} with an
-         * underlying {@code LessOrEqual} expression.
-         *
-         * @param version a {@code Version} to compare with
-         * @return a newly created {@code CompositeExpression}
-         */
-        public static CompositeExpression lte(Version version) {
-            return new CompositeExpression(new LessOrEqual(version));
-        }
-
-        /**
-         * Creates a {@code CompositeExpression} with an
-         * underlying {@code LessOrEqual} expression.
-         *
-         * @param version a {@code Version} string to compare with
-         * @return a newly created {@code CompositeExpression}
-         * @throws IllegalArgumentException if the input string is {@code NULL} or empty
-         * @throws ParseException when invalid version string is provided
-         * @throws UnexpectedCharacterException is a special case of {@code ParseException}
-         */
-        public static CompositeExpression lte(String version) {
-            return lte(Version.valueOf(version));
-        }
+    public static CompositeExpression not(Predicate<Version> expr) {
+      return new CompositeExpression(expr.negate());
     }
 
     /**
-     * The underlying expression tree.
+     * Creates a {@code CompositeExpression} with
+     * an underlying {@code Equal} expression.
+     *
+     * @param version a {@code Version} to check for equality
+     * @return a newly created {@code CompositeExpression}
      */
-    private Predicate<Version> exprTree;
+    public static CompositeExpression eq(Version version) {
+      return new CompositeExpression(new Equal(version));
+    }
 
     /**
-     * Constructs a {@code CompositeExpression}
-     * with an underlying {@code Expression}.
+     * Creates a {@code CompositeExpression} with
+     * an underlying {@code Equal} expression.
      *
-     * @param expr the underlying expression
-     */
-    public CompositeExpression(Predicate<Version> expr) {
-        exprTree = expr;
-    }
-    /**
-     * Interprets the expression.
-     *
-     * @param version a {@code Version} string to test against
-     * @return the result of the expression interpretation
-     * @throws IllegalArgumentException if the input string is {@code NULL} or empty
-     * @throws ParseException when invalid version string is provided
+     * @param version a {@code Version} string to check for equality
+     * @return a newly created {@code CompositeExpression}
+     * @throws IllegalArgumentException     if the input string is {@code NULL} or empty
+     * @throws ParseException               when invalid version string is provided
      * @throws UnexpectedCharacterException is a special case of {@code ParseException}
      */
-    public boolean interpret(String version) {
-        return test(Version.valueOf(version));
+    public static CompositeExpression eq(String version) {
+      return eq(Version.valueOf(version));
     }
 
     /**
-     * {@inheritDoc}
+     * Creates a {@code CompositeExpression} with
+     * an underlying {@code NotEqual} expression.
+     *
+     * @param version a {@code Version} to check for non-equality
+     * @return a newly created {@code CompositeExpression}
      */
-    @Override
-    public boolean test(Version version) {
-        return exprTree.test(version);
+    public static CompositeExpression neq(Version version) {
+      return new CompositeExpression(new NotEqual(version));
     }
 
-    @Override
-    public CompositeExpression and(Predicate<? super Version> other) {
-        return new CompositeExpression(exprTree.and(other));
+    /**
+     * Creates a {@code CompositeExpression} with
+     * an underlying {@code NotEqual} expression.
+     *
+     * @param version a {@code Version} string to check for non-equality
+     * @return a newly created {@code CompositeExpression}
+     * @throws IllegalArgumentException     if the input string is {@code NULL} or empty
+     * @throws ParseException               when invalid version string is provided
+     * @throws UnexpectedCharacterException is a special case of {@code ParseException}
+     */
+    public static CompositeExpression neq(String version) {
+      return neq(Version.valueOf(version));
     }
 
-    @Override
-    public CompositeExpression or(Predicate<? super Version> other) {
-        return new CompositeExpression(exprTree.or(other));
+    /**
+     * Creates a {@code CompositeExpression} with
+     * an underlying {@code Greater} expression.
+     *
+     * @param version a {@code Version} to compare with
+     * @return a newly created {@code CompositeExpression}
+     */
+    public static CompositeExpression gt(Version version) {
+      return new CompositeExpression(new Greater(version));
     }
+
+    /**
+     * Creates a {@code CompositeExpression} with
+     * an underlying {@code Greater} expression.
+     *
+     * @param version a {@code Version} string to compare with
+     * @return a newly created {@code CompositeExpression}
+     * @throws IllegalArgumentException     if the input string is {@code NULL} or empty
+     * @throws ParseException               when invalid version string is provided
+     * @throws UnexpectedCharacterException is a special case of {@code ParseException}
+     */
+    public static CompositeExpression gt(String version) {
+      return gt(Version.valueOf(version));
+    }
+
+    /**
+     * Creates a {@code CompositeExpression} with an
+     * underlying {@code GreaterOrEqual} expression.
+     *
+     * @param version a {@code Version} to compare with
+     * @return a newly created {@code CompositeExpression}
+     */
+    public static CompositeExpression gte(Version version) {
+      return new CompositeExpression(new GreaterOrEqual(version));
+    }
+
+    /**
+     * Creates a {@code CompositeExpression} with an
+     * underlying {@code GreaterOrEqual} expression.
+     *
+     * @param version a {@code Version} string to compare with
+     * @return a newly created {@code CompositeExpression}
+     * @throws IllegalArgumentException     if the input string is {@code NULL} or empty
+     * @throws ParseException               when invalid version string is provided
+     * @throws UnexpectedCharacterException is a special case of {@code ParseException}
+     */
+    public static CompositeExpression gte(String version) {
+      return gte(Version.valueOf(version));
+    }
+
+    /**
+     * Creates a {@code CompositeExpression} with
+     * an underlying {@code Less} expression.
+     *
+     * @param version a {@code Version} to compare with
+     * @return a newly created {@code CompositeExpression}
+     */
+    public static CompositeExpression lt(Version version) {
+      return new CompositeExpression(new Less(version));
+    }
+
+    /**
+     * Creates a {@code CompositeExpression} with
+     * an underlying {@code Less} expression.
+     *
+     * @param version a {@code Version} string to compare with
+     * @return a newly created {@code CompositeExpression}
+     * @throws IllegalArgumentException     if the input string is {@code NULL} or empty
+     * @throws ParseException               when invalid version string is provided
+     * @throws UnexpectedCharacterException is a special case of {@code ParseException}
+     */
+    public static CompositeExpression lt(String version) {
+      return lt(Version.valueOf(version));
+    }
+
+    /**
+     * Creates a {@code CompositeExpression} with an
+     * underlying {@code LessOrEqual} expression.
+     *
+     * @param version a {@code Version} to compare with
+     * @return a newly created {@code CompositeExpression}
+     */
+    public static CompositeExpression lte(Version version) {
+      return new CompositeExpression(new LessOrEqual(version));
+    }
+
+    /**
+     * Creates a {@code CompositeExpression} with an
+     * underlying {@code LessOrEqual} expression.
+     *
+     * @param version a {@code Version} string to compare with
+     * @return a newly created {@code CompositeExpression}
+     * @throws IllegalArgumentException     if the input string is {@code NULL} or empty
+     * @throws ParseException               when invalid version string is provided
+     * @throws UnexpectedCharacterException is a special case of {@code ParseException}
+     */
+    public static CompositeExpression lte(String version) {
+      return lte(Version.valueOf(version));
+    }
+  }
 }

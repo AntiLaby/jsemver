@@ -24,15 +24,19 @@
 
 package com.github.zafarkhaja.semver;
 
+import static com.github.zafarkhaja.semver.VersionParser.CharType.DIGIT;
+import static com.github.zafarkhaja.semver.VersionParser.CharType.DOT;
+import static com.github.zafarkhaja.semver.VersionParser.CharType.EOI;
+import static com.github.zafarkhaja.semver.VersionParser.CharType.HYPHEN;
+import static com.github.zafarkhaja.semver.VersionParser.CharType.LETTER;
+import static com.github.zafarkhaja.semver.VersionParser.CharType.PLUS;
+
 import com.github.zafarkhaja.semver.compiling.Lexer;
 import com.github.zafarkhaja.semver.compiling.LexerException;
 import com.github.zafarkhaja.semver.util.Stream;
-
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
-
-import static com.github.zafarkhaja.semver.VersionParser.CharType.*;
 
 /**
  * A parser for the SemVer Version.
@@ -42,10 +46,102 @@ import static com.github.zafarkhaja.semver.VersionParser.CharType.*;
  */
 final class VersionParser extends Lexer<Character> implements Parser<Version> {
 
+  /**
+   * Valid character types.
+   */
+  enum CharType implements com.github.zafarkhaja.semver.util.Stream.ElementType<Character> {
+
+    DIGIT {
+      /**
+       * {@inheritDoc}
+       */
+      @Override
+      public boolean isMatchedBy(Character chr) {
+        return chr != null && chr >= '0' && chr <= '9';
+      }
+    },
+    DOT {
+      /**
+       * {@inheritDoc}
+       */
+      @Override
+      public boolean isMatchedBy(Character chr) {
+        return chr != null && chr == '.';
+      }
+    },
+    EOI {
+      /**
+       * {@inheritDoc}
+       */
+      @Override
+      public boolean isMatchedBy(Character chr) {
+        return chr == null;
+      }
+    },
+    HYPHEN {
+      /**
+       * {@inheritDoc}
+       */
+      @Override
+      public boolean isMatchedBy(Character chr) {
+        return chr != null && chr == '-';
+      }
+    },
+    ILLEGAL {
+      /**
+       * {@inheritDoc}
+       */
+      @Override
+      public boolean isMatchedBy(Character chr) {
+        EnumSet<CharType> itself = EnumSet.of(ILLEGAL);
+        for (CharType type : EnumSet.complementOf(itself)) {
+          if (type.isMatchedBy(chr)) {
+            return false;
+          }
+        }
+        return true;
+      }
+    },
+    LETTER {
+      /**
+       * {@inheritDoc}
+       */
+      @Override
+      public boolean isMatchedBy(Character chr) {
+        return chr != null && ((chr >= 'a' && chr <= 'z')
+            || (chr >= 'A' && chr <= 'Z'));
+      }
+    },
+    PLUS {
+      /**
+       * {@inheritDoc}
+       */
+      @Override
+      public boolean isMatchedBy(Character chr) {
+        return chr != null && chr == '+';
+      }
+    };
+
+    /**
+     * Gets the type for a given character.
+     *
+     * @param chr the character to get the type for
+     * @return the type of the specified character
+     */
+    static CharType forCharacter(Character chr) {
+      for (CharType type : values()) {
+        if (type.isMatchedBy(chr)) {
+          return type;
+        }
+      }
+      return null;
+    }
+  }
+
   private static final VersionParser INSTANCE = new VersionParser();
 
   /**
-   * Version parser is a singleton
+   * Version parser is a singleton.
    */
   private VersionParser() {
     if (INSTANCE != null) {
@@ -63,7 +159,6 @@ final class VersionParser extends Lexer<Character> implements Parser<Version> {
    * @throws UnexpectedCharacterException when encounters an unexpectedToken character type
    */
   static Version parseValidSemVer(String version) {
-    ;
     return INSTANCE.parse(version);
   }
 
@@ -107,6 +202,8 @@ final class VersionParser extends Lexer<Character> implements Parser<Version> {
   }
 
   /**
+   * Tokenizes the input string.
+   *
    * @param input the input string to tokenize
    * @return the token stream
    * @throws UnexpectedCharacterException when encounters an unexpectedToken character type
@@ -427,98 +524,6 @@ final class VersionParser extends Lexer<Character> implements Parser<Version> {
           chars.currentOffset(),
           expected
       );
-    }
-  }
-
-  /**
-   * Valid character types.
-   */
-  enum CharType implements Stream.ElementType<Character> {
-
-    DIGIT {
-      /**
-       * {@inheritDoc}
-       */
-      @Override
-      public boolean isMatchedBy(Character chr) {
-        return chr != null && chr >= '0' && chr <= '9';
-      }
-    },
-    LETTER {
-      /**
-       * {@inheritDoc}
-       */
-      @Override
-      public boolean isMatchedBy(Character chr) {
-        return chr != null && ((chr >= 'a' && chr <= 'z')
-            || (chr >= 'A' && chr <= 'Z'));
-      }
-    },
-    DOT {
-      /**
-       * {@inheritDoc}
-       */
-      @Override
-      public boolean isMatchedBy(Character chr) {
-        return chr != null && chr == '.';
-      }
-    },
-    HYPHEN {
-      /**
-       * {@inheritDoc}
-       */
-      @Override
-      public boolean isMatchedBy(Character chr) {
-        return chr != null && chr == '-';
-      }
-    },
-    PLUS {
-      /**
-       * {@inheritDoc}
-       */
-      @Override
-      public boolean isMatchedBy(Character chr) {
-        return chr != null && chr == '+';
-      }
-    },
-    EOI {
-      /**
-       * {@inheritDoc}
-       */
-      @Override
-      public boolean isMatchedBy(Character chr) {
-        return chr == null;
-      }
-    },
-    ILLEGAL {
-      /**
-       * {@inheritDoc}
-       */
-      @Override
-      public boolean isMatchedBy(Character chr) {
-        EnumSet<CharType> itself = EnumSet.of(ILLEGAL);
-        for (CharType type : EnumSet.complementOf(itself)) {
-          if (type.isMatchedBy(chr)) {
-            return false;
-          }
-        }
-        return true;
-      }
-    };
-
-    /**
-     * Gets the type for a given character.
-     *
-     * @param chr the character to get the type for
-     * @return the type of the specified character
-     */
-    static CharType forCharacter(Character chr) {
-      for (CharType type : values()) {
-        if (type.isMatchedBy(chr)) {
-          return type;
-        }
-      }
-      return null;
     }
   }
 }

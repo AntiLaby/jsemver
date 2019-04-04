@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package com.github.zafarkhaja.semver.compiling;
 
 import com.github.zafarkhaja.semver.ParseException;
@@ -34,28 +35,28 @@ import com.github.zafarkhaja.semver.ParseException;
  */
 public class LexerException extends ParseException {
 
-    /**
-     * The string being analyzed starting from an illegal character.
-     */
-    private final String expr;
+  /**
+   * The string being analyzed starting from an illegal character.
+   */
+  private final String expr;
 
-    /**
-     * Constructs a {@code LexerException} instance with
-     * a string starting from an illegal character.
-     *
-     * @param expr the string starting from an illegal character
-     */
-    public LexerException(String expr) {
-        this.expr = expr;
-    }
+  /**
+   * Constructs a {@code LexerException} instance with
+   * a string starting from an illegal character.
+   *
+   * @param expr the string starting from an illegal character
+   */
+  public LexerException(final String expr) {
+    this.expr = expr;
+  }
 
-    /**
-     * Returns the string representation of this exception.
-     *
-     * @return the string representation of this exception
-     */
-    @Override
-    public String toString() {
-        return "Illegal character near '" + expr + "'";
-    }
+  /**
+   * Returns the string representation of this exception.
+   *
+   * @return the string representation of this exception
+   */
+  @Override
+  public String toString() {
+    return "Illegal character near '" + expr + "'";
+  }
 }

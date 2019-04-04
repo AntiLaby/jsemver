@@ -21,98 +21,110 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package com.github.zafarkhaja.semver.expr;
 
+import static com.github.zafarkhaja.semver.expr.ExprLexer.ExprToken.Type.AND;
+import static com.github.zafarkhaja.semver.expr.ExprLexer.ExprToken.Type.DOT;
+import static com.github.zafarkhaja.semver.expr.ExprLexer.ExprToken.Type.EQUAL;
+import static com.github.zafarkhaja.semver.expr.ExprLexer.ExprToken.Type.GREATER;
+import static com.github.zafarkhaja.semver.expr.ExprLexer.ExprToken.Type.HYPHEN;
+import static com.github.zafarkhaja.semver.expr.ExprLexer.ExprToken.Type.NOT_EQUAL;
+import static com.github.zafarkhaja.semver.expr.ExprLexer.ExprToken.Type.NUMERIC;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.github.zafarkhaja.semver.expr.ExprLexer.ExprToken;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Nested;
-import static com.github.zafarkhaja.semver.expr.ExprLexer.ExprToken.Type.*;
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 /**
+ * Lexer Token tests.
  *
  * @author Zafar Khaja &lt;zafarkhaja@gmail.com&gt;
  */
 public class LexerTokenTest {
-    @Nested
-    public static class EqualsMethodTest {
+  @Nested
+  public static class EqualsMethodTest {
 
-        @Test
-        public void shouldBeReflexive() {
-            ExprToken token = new ExprToken(NUMERIC, "1", 0);
-            assertTrue(token.equals(token));
-        }
-
-        @Test
-        public void shouldBeSymmetric() {
-            ExprToken t1 = new ExprToken(EQUAL, "=", 0);
-            ExprToken t2 = new ExprToken(EQUAL, "=", 0);
-            assertTrue(t1.equals(t2));
-            assertTrue(t2.equals(t1));
-        }
-
-        @Test
-        public void shouldBeTransitive() {
-            ExprToken t1 = new ExprToken(GREATER, ">", 0);
-            ExprToken t2 = new ExprToken(GREATER, ">", 0);
-            ExprToken t3 = new ExprToken(GREATER, ">", 0);
-            assertTrue(t1.equals(t2));
-            assertTrue(t2.equals(t3));
-            assertTrue(t1.equals(t3));
-        }
-
-        @Test
-        public void shouldBeConsistent() {
-            ExprToken t1 = new ExprToken(HYPHEN, "-", 0);
-            ExprToken t2 = new ExprToken(HYPHEN, "-", 0);
-            assertTrue(t1.equals(t2));
-            assertTrue(t1.equals(t2));
-            assertTrue(t1.equals(t2));
-        }
-
-        @Test
-        public void shouldReturnFalseIfOtherVersionIsOfDifferentType() {
-            ExprToken t1 = new ExprToken(DOT, ".", 0);
-            assertFalse(t1.equals("."));
-        }
-
-        @Test
-        public void shouldReturnFalseIfOtherVersionIsNull() {
-            ExprToken t1 = new ExprToken(AND, "&", 0);
-            ExprToken t2 = null;
-            assertFalse(t1.equals(t2));
-        }
-
-        @Test
-        public void shouldReturnFalseIfTypesAreDifferent() {
-            ExprToken t1 = new ExprToken(EQUAL, "=", 0);
-            ExprToken t2 = new ExprToken(NOT_EQUAL, "!=", 0);
-            assertFalse(t1.equals(t2));
-        }
-
-        @Test
-        public void shouldReturnFalseIfLexemesAreDifferent() {
-            ExprToken t1 = new ExprToken(NUMERIC, "1", 0);
-            ExprToken t2 = new ExprToken(NUMERIC, "2", 0);
-            assertFalse(t1.equals(t2));
-        }
-
-        @Test
-        public void shouldReturnFalseIfPositionsAreDifferent() {
-            ExprToken t1 = new ExprToken(NUMERIC, "1", 1);
-            ExprToken t2 = new ExprToken(NUMERIC, "1", 2);
-            assertFalse(t1.equals(t2));
-        }
+    @Test
+    public void shouldBeReflexive() {
+      ExprToken token = new ExprToken(NUMERIC, "1", 0);
+      assertTrue(token.equals(token));
     }
-    @Nested
-    public static class HashCodeMethodTest {
 
-        @Test
-        public void shouldReturnSameHashCodeIfTokensAreEqual() {
-            ExprToken t1 = new ExprToken(NUMERIC, "1", 0);
-            ExprToken t2 = new ExprToken(NUMERIC, "1", 0);
-            assertTrue(t1.equals(t2));
-            assertEquals(t1.hashCode(), t2.hashCode());
-        }
+    @Test
+    public void shouldBeSymmetric() {
+      ExprToken t1 = new ExprToken(EQUAL, "=", 0);
+      ExprToken t2 = new ExprToken(EQUAL, "=", 0);
+      assertTrue(t1.equals(t2));
+      assertTrue(t2.equals(t1));
     }
+
+    @Test
+    public void shouldBeTransitive() {
+      ExprToken t1 = new ExprToken(GREATER, ">", 0);
+      ExprToken t2 = new ExprToken(GREATER, ">", 0);
+      ExprToken t3 = new ExprToken(GREATER, ">", 0);
+      assertTrue(t1.equals(t2));
+      assertTrue(t2.equals(t3));
+      assertTrue(t1.equals(t3));
+    }
+
+    @Test
+    public void shouldBeConsistent() {
+      ExprToken t1 = new ExprToken(HYPHEN, "-", 0);
+      ExprToken t2 = new ExprToken(HYPHEN, "-", 0);
+      assertTrue(t1.equals(t2));
+      assertTrue(t1.equals(t2));
+      assertTrue(t1.equals(t2));
+    }
+
+    @Test
+    public void shouldReturnFalseIfOtherVersionIsOfDifferentType() {
+      ExprToken t1 = new ExprToken(DOT, ".", 0);
+      assertFalse(t1.equals("."));
+    }
+
+    @Test
+    public void shouldReturnFalseIfOtherVersionIsNull() {
+      ExprToken t1 = new ExprToken(AND, "&", 0);
+      ExprToken t2 = null;
+      assertFalse(t1.equals(t2));
+    }
+
+    @Test
+    public void shouldReturnFalseIfTypesAreDifferent() {
+      ExprToken t1 = new ExprToken(EQUAL, "=", 0);
+      ExprToken t2 = new ExprToken(NOT_EQUAL, "!=", 0);
+      assertFalse(t1.equals(t2));
+    }
+
+    @Test
+    public void shouldReturnFalseIfLexemesAreDifferent() {
+      ExprToken t1 = new ExprToken(NUMERIC, "1", 0);
+      ExprToken t2 = new ExprToken(NUMERIC, "2", 0);
+      assertFalse(t1.equals(t2));
+    }
+
+    @Test
+    public void shouldReturnFalseIfPositionsAreDifferent() {
+      ExprToken t1 = new ExprToken(NUMERIC, "1", 1);
+      ExprToken t2 = new ExprToken(NUMERIC, "1", 2);
+      assertFalse(t1.equals(t2));
+    }
+  }
+
+  @Nested
+  public static class HashCodeMethodTest {
+
+    @Test
+    public void shouldReturnSameHashCodeIfTokensAreEqual() {
+      ExprToken t1 = new ExprToken(NUMERIC, "1", 0);
+      ExprToken t2 = new ExprToken(NUMERIC, "1", 0);
+      assertTrue(t1.equals(t2));
+      assertEquals(t1.hashCode(), t2.hashCode());
+    }
+  }
 }

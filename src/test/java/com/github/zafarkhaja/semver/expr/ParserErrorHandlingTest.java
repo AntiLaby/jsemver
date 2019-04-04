@@ -21,47 +21,65 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package com.github.zafarkhaja.semver.expr;
+
+import static com.github.zafarkhaja.semver.expr.ExprLexer.ExprToken.Type.AND;
+import static com.github.zafarkhaja.semver.expr.ExprLexer.ExprToken.Type.EOI;
+import static com.github.zafarkhaja.semver.expr.ExprLexer.ExprToken.Type.NUMERIC;
+import static com.github.zafarkhaja.semver.expr.ExprLexer.ExprToken.Type.RIGHT_PAREN;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import com.github.zafarkhaja.semver.compiling.UnexpectedTokenException;
 import com.github.zafarkhaja.semver.expr.ExprLexer.ExprToken;
-
+import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.stream.Stream;
-
-import static com.github.zafarkhaja.semver.expr.ExprLexer.ExprToken.Type.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
-
 /**
+ * Expression Parser Error Handling tests.
  *
  * @author Zafar Khaja &lt;zafarkhaja@gmail.com&gt;
  */
 public class ParserErrorHandlingTest {
 
-    @ParameterizedTest
-    @MethodSource("parameters")
-    public void shouldCorrectlyHandleParseErrors(String invalidExpr, ExprToken unexpected, ExprToken.Type[] expected) {
-        try {
-            ExpressionParser.newInstance().parse(invalidExpr);
-        } catch (UnexpectedTokenException e) {
-            assertEquals(unexpected, e.unexpectedToken);
-            assertArrayEquals(expected, e.getExpectedTokenTypes());
-            return;
-        }
-        fail("Uncaught exception");
+  /**
+   * Test params.
+   *
+   * @return test parameters
+   */
+  public static Stream<Arguments> parameters() {
+    return Stream.of(
+        arguments("1)", new ExprToken(RIGHT_PAREN, ")", 1), new ExprToken.Type[] {EOI}),
+        arguments("(>1.0.1", new ExprToken(EOI, null, 7), new ExprToken.Type[] {RIGHT_PAREN}),
+        arguments("((>=1 & <2)", new ExprToken(EOI, null, 11), new ExprToken.Type[] {RIGHT_PAREN}),
+        arguments(">=1.0.0 &", new ExprToken(EOI, null, 9), new ExprToken.Type[] {NUMERIC}),
+        arguments("(>2.0 |)", new ExprToken(RIGHT_PAREN, ")", 7), new ExprToken.Type[] {NUMERIC}),
+        arguments("& 1.2", new ExprToken(AND, "&", 0), new ExprToken.Type[] {NUMERIC})
+    );
+  }
+
+  /**
+   * A parse error handling test.
+   * @param invalidExpr from params[0]
+   * @param unexpected from params[1]
+   * @param expected from params[2]
+   */
+  @ParameterizedTest
+  @MethodSource("parameters")
+  public void shouldCorrectlyHandleParseErrors(String invalidExpr, ExprToken unexpected,
+                                               ExprToken.Type[] expected) {
+    try {
+      ExpressionParser.newInstance().parse(invalidExpr);
+    } catch (UnexpectedTokenException e) {
+      assertEquals(unexpected, e.unexpectedToken);
+      assertArrayEquals(expected, e.getExpectedTokenTypes());
+      return;
     }
-    public static Stream<Arguments> parameters() {
-        return Stream.of(
-            arguments( "1)",           new ExprToken(RIGHT_PAREN, ")", 1),  new ExprToken.Type[] { EOI } ),
-            arguments( "(>1.0.1",      new ExprToken(EOI, null, 7),         new ExprToken.Type[] { RIGHT_PAREN } ),
-            arguments( "((>=1 & <2)",  new ExprToken(EOI, null, 11),        new ExprToken.Type[] { RIGHT_PAREN } ),
-            arguments( ">=1.0.0 &",    new ExprToken(EOI, null, 9),         new ExprToken.Type[] { NUMERIC } ),
-            arguments( "(>2.0 |)",     new ExprToken(RIGHT_PAREN, ")", 7),  new ExprToken.Type[] { NUMERIC } ),
-            arguments( "& 1.2",        new ExprToken(AND, "&", 0),          new ExprToken.Type[] { NUMERIC } )
-        );
-    }
+    fail("Uncaught exception");
+  }
 }

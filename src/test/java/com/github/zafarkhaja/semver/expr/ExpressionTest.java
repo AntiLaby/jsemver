@@ -1,13 +1,24 @@
 package com.github.zafarkhaja.semver.expr;
 
+import static com.github.zafarkhaja.semver.expr.CompositeExpression.Helper.eq;
+import static com.github.zafarkhaja.semver.expr.CompositeExpression.Helper.gt;
+import static com.github.zafarkhaja.semver.expr.CompositeExpression.Helper.gte;
+import static com.github.zafarkhaja.semver.expr.CompositeExpression.Helper.lt;
+import static com.github.zafarkhaja.semver.expr.CompositeExpression.Helper.lte;
+import static com.github.zafarkhaja.semver.expr.CompositeExpression.Helper.neq;
+import static com.github.zafarkhaja.semver.expr.CompositeExpression.Helper.not;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.github.zafarkhaja.semver.Version;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static com.github.zafarkhaja.semver.expr.CompositeExpression.Helper.*;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
+/**
+ * Expression tests.
+ *
+ * @author Zafar Khaja &lt;zafarkhaja@gmail.com&gt;
+ */
 public class ExpressionTest {
   @Test
   public void lessTest() {

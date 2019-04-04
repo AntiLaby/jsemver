@@ -1,6 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
+apply plugin: 'checkstyle'
 
 repositories {
     mavenCentral()
@@ -93,6 +94,18 @@ signing {
 
 test {
     useJUnitPlatform()
+}
+
+classes {
+    doLast {
+        checkstyleMain
+    }
+}
+
+testClasses {
+    doLast {
+        checkstyleTest
+    }
 }
 
 publishMavenJavaPublicationToMavenLocal.dependsOn test
