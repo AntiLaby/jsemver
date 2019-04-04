@@ -13,16 +13,11 @@ dependencies {
 }
 
 group = 'com.github.zafarkhaja'
-version = '0.10.0'
+version = '0.11.0-SNAPSHOT'
 description = 'Java implementation of the SemVer Specification, maintained by the AntiLaby Team'
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
-}
-
-javadoc {
-    options.addStringOption('-Xdoclint:none')
-    failOnError = false
 }
 
 jar {
@@ -48,7 +43,7 @@ publishing {
                 password = mavenPassword
             }
             authentication {
-                digest(DigestAuthentication)
+                digest(BasicAuthentication)
             }
 
         }

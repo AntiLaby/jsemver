@@ -36,7 +36,7 @@ import java.util.function.Predicate;
  * @author Zafar Khaja &lt;zafarkhaja@gmail.com&gt;
  * @since 0.9.0
  */
-public class CompositeExpression implements Expression {
+public class CompositeExpression implements Predicate<Version> {
 
     /**
      * A class with static helper methods.

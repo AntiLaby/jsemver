@@ -33,6 +33,8 @@ import com.github.zafarkhaja.semver.util.Stream.ElementType;
 import com.github.zafarkhaja.semver.util.UnexpectedElementException;
 import java.util.EnumSet;
 import java.util.Iterator;
+import java.util.function.Predicate;
+
 import static com.github.zafarkhaja.semver.expr.CompositeExpression.Helper.*;
 import static com.github.zafarkhaja.semver.expr.ExprLexer.ExprToken.Type.*;
 
@@ -42,7 +44,7 @@ import static com.github.zafarkhaja.semver.expr.ExprLexer.ExprToken.Type.*;
  * @author Zafar Khaja &lt;zafarkhaja@gmail.com&gt;
  * @since 0.7.0
  */
-public class ExpressionParser implements Parser<Expression> {
+public class ExpressionParser implements Parser<Predicate<Version>> {
 
     /**
      * The lexer instance used for tokenization of the input string.
@@ -71,7 +73,7 @@ public class ExpressionParser implements Parser<Expression> {
      *
      * @return a new instance of the {@code ExpressionParser} class
      */
-    public static Parser<Expression> newInstance() {
+    public static Parser<Predicate<Version>> newInstance() {
         return new ExpressionParser(new ExprLexer());
     }
 
@@ -84,9 +86,9 @@ public class ExpressionParser implements Parser<Expression> {
      * @throws UnexpectedTokenException when consumes a token of an unexpectedToken type
      */
     @Override
-    public Expression parse(String input) {
+    public Predicate<Version> parse(String input) {
         tokens = lexer.tokenize(input);
-        Expression expr = parseSemVerExpression();
+        Predicate<Version> expr = parseSemVerExpression();
         consumeNextToken(EOI);
         return expr;
     }

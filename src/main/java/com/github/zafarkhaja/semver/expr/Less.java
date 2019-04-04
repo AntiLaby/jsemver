@@ -25,13 +25,15 @@ package com.github.zafarkhaja.semver.expr;
 
 import com.github.zafarkhaja.semver.Version;
 
+import java.util.function.Predicate;
+
 /**
  * Expression for the comparison "less than" operator.
  *
  * @author Zafar Khaja &lt;zafarkhaja@gmail.com&gt;
  * @since 0.7.0
  */
-class Less implements Expression {
+class Less implements Predicate<Version> {
 
     /**
      * The parsed version, the right-hand
